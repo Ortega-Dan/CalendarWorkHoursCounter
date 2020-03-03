@@ -1,0 +1,11 @@
+{
+  "manifest_version": 2,
+  "name": "My Own Calendar Day Hours Counter",
+  "version": "0.1",
+  "content_scripts": [
+  {
+    "matches": ["*://calendar.google.com/*"],
+    "js": ["jquery-3.4.1.min.js","content.js"]
+  }
+]
+}
