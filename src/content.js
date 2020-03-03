@@ -42,7 +42,7 @@ $("body").keypress(function (event) {
 
         alert(message)
         if ((8 - adder) < 0) {
-            alert("You've worked " + (8 - adder)*-1 + " extra hours")
+            alert("You've worked " + (8 - adder) * -1 + " extra hours")
         } else {
             alert("\nOnly " + (8 - adder) + " hours missing")
         }
