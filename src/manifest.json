@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "My Own Calendar Day Hours Counter",
+  "name": "Calendar Day Hours Counter",
   "version": "0.1",
   "content_scripts": [
     {
