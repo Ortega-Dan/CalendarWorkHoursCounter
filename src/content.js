@@ -38,7 +38,7 @@ $("body").keypress(function (event) {
             }
         })
 
-        var message = "Hours Worked Today: " + adder
+        var message = "" + adder + " Hours Worked Today"
 
         alert(message)
         if ((8 - adder) < 0) {
