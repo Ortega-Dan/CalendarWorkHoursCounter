@@ -46,12 +46,16 @@ $("body").keypress(function (event) {
             }
         })
 
-        alert("[" + requiredDayText + "]\n\n" + calendarTimeAdder + " hours worked")
-
-        if ((8 - calendarTimeAdder) < 0) {
-            alert("[" + requiredDayText + "]\n\nYou've worked " + (8 - calendarTimeAdder) * -1 + " extra hours")
+        if (requiredDayText == "" || calendarTimeAdder === 0) {
+            alert("No times found for filter [" + requiredDayText + "]")
         } else {
-            alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
+            alert("[" + requiredDayText + "]\n\n" + calendarTimeAdder + " hours worked")
+
+            if ((8 - calendarTimeAdder) < 0) {
+                alert("[" + requiredDayText + "]\n\nYou've worked " + (8 - calendarTimeAdder) * -1 + " extra hours")
+            } else {
+                alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
+            }
         }
         calendarTimeAdder = 0
 
