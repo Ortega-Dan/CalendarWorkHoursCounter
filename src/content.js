@@ -25,7 +25,7 @@ $("body").keypress(function (event) {
 
             var texto = $(this).text()
 
-            if (texto.includes(requiredDayText) && !texto.includes("Lunch")) {
+            if (texto.includes(requiredDayText) && !texto.includes("Lunch") && !texto.includes("cal.ignore")) {
                 console.log(index + ") " + texto)
 
                 var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
