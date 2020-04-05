@@ -1,6 +1,6 @@
-var calendarTimeAdder = 0
-
 $("body").keypress(function (event) {
+
+    var calendarTimeAdder = 0
 
     if (event.ctrlKey === true && (event.key === "i" | event.key === "I" | event.key === "k" | event.key === "K")) {
 
@@ -36,11 +36,11 @@ $("body").keypress(function (event) {
                 var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
 
 
-                console.log(startMinute)
-                console.log(endMinute)
+                // console.log(startMinute)
+                // console.log(endMinute)
 
                 hoursLength = (endMinute - startMinute) / 60
-
+                console.log("Hours: " + hoursLength)
                 calendarTimeAdder += hoursLength
 
             }
@@ -57,7 +57,6 @@ $("body").keypress(function (event) {
                 alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
             }
         }
-        calendarTimeAdder = 0
 
         console.log("Done ******\n\n")
     }
