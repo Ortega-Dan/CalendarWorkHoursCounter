@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "request": "launch",
+            "name": "Method Testing",
+            "program": "${workspaceFolder}/testing.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
             "type": "chrome",
             "request": "attach",
             "name": "Attach to Chrome",
