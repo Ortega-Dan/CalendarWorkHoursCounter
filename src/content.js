@@ -5,6 +5,17 @@ var enterpriseCalendar = !calendarType.includes("Google")
 var months = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December']
 
+function convertToMilitaryTime(timeInAmPmFormatString) {
+
+    console.log(timeInAmPmFormatString)
+
+
+    
+
+
+    return ""
+}
+
 
 $("body").keypress(function (event) {
 
@@ -68,7 +79,41 @@ $("body").keypress(function (event) {
             })
 
         else
-            $("div.ynRLnc").each(function (index) { })
+            $("div.ynRLnc").each(function (index) {
+                var texto = $(this).text()
+
+                if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
+                    !texto.includes("busy,") && !texto.includes("cal.ignore")) {
+
+                    console.log(index + ") " + texto)
+
+
+                    var fromTime = texto.split(" ")[0]
+                    var toTime = texto.split(" ")[2]
+
+                    toTime = toTime.substring(0, toTime.length - 1)
+                    toTime = convertToMilitaryTime(toTime)
+
+                    fromTime = convertToMilitaryTime(fromTime)
+
+
+                    var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
+                    var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
+
+
+                    var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
+                    var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
+
+
+                    // console.log(startMinute)
+                    // console.log(endMinute)
+
+                    hoursLength = (endMinute - startMinute) / 60
+                    console.log("Hours: " + hoursLength)
+                    calendarTimeAdder += hoursLength
+
+                }
+            })
 
 
         if (requiredDayText == "" || calendarTimeAdder === 0) {
