@@ -1,5 +1,5 @@
-// var calendarType = $("html").getAttribute("data-base-title")
 var calendarType = document.getElementsByTagName("html")[0].getAttribute("data-base-title")
+// var calendarType = $("html").getAttribute("data-base-title")
 
 var enterpriseCalendar = !calendarType.includes("Google")
 
