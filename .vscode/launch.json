@@ -19,11 +19,17 @@
             "name": "Attach to Chrome",
             "port": 9222,
             "webRoot": "${workspaceFolder}/src",
-            "url": "https://calendar.google.com/calendar/r"
+            "url": "https://calendar.google.com/calendar/r" //<-- this url must ...
+            // ... match exactly the one in the address bar of the browser
+            //
             // https://stackoverflow.com/questions/42025962/debug-chrome-extensions-with-visual-studio-code
             // make sure you have deployed your extension in your chrome browser ... source deployed 
             // ... and here in vscode must be the same for debug breakpoints to match and fall in 
             // ... the right place
+            // 
+            // In sumary ... just open chrome with:
+            // google-chrome --remote-debugging-port=9222 https://calendar.google.com/
+            // before debugging with this option
         }
     ]
 }

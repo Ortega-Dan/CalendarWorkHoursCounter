@@ -14,3 +14,49 @@ or leave empty to calculate the entire visible week.
 
 This program works in Week view of the calendar\
 (switch to week view by hitting "w" key [that is google-calendar's native functionality])
+
+
+
+
+
+
+______________________________________________________
+\
+Here the contents of the launch.json to debug from chrome (read better from raw README.md file):
+\
+\
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Method Testing",
+            "program": "${workspaceFolder}/testing.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}/src",
+            "url": "https://calendar.google.com/calendar/r" //<-- this url must ...
+            // ... match exactly the one in the address bar of the browser
+            //
+            // https://stackoverflow.com/questions/42025962/debug-chrome-extensions-with-visual-studio-code
+            // make sure you have deployed your extension in your chrome browser ... source deployed 
+            // ... and here in vscode must be the same for debug breakpoints to match and fall in 
+            // ... the right place
+            // 
+            // In sumary ... just open chrome with:
+            // google-chrome --remote-debugging-port=9222 https://calendar.google.com/
+            // before debugging with this option
+        }
+    ]
+}
