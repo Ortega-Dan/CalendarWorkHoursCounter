@@ -3,35 +3,7 @@ var calendarType = document.getElementsByTagName("html")[0].getAttribute("data-b
 var enterpriseCalendar = !calendarType.includes("Google")
 
 var months = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
-
-
-function googleCounter(index) {
-
-    var texto = $(this).text()
-
-    if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
-        !texto.includes("busy,") && !texto.includes("cal.ignore")) {
-
-        console.log(index + ") " + texto)
-
-        var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
-        var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
-
-
-        var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
-        var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
-
-
-        // console.log(startMinute)
-        // console.log(endMinute)
-
-        hoursLength = (endMinute - startMinute) / 60
-        console.log("Hours: " + hoursLength)
-        calendarTimeAdder += hoursLength
-
-    }
-}
+    'July', 'August', 'September', 'October', 'November', 'December']
 
 
 $("body").keypress(function (event) {
@@ -65,9 +37,38 @@ $("body").keypress(function (event) {
         console.log(requiredDayText)
 
 
-
         var calendarTimeAdder = 0
-        $("div.ynRLnc").each(googleCounter)
+
+        if (!enterpriseCalendar)
+            $("div.ynRLnc").each(function (index) {
+
+                var texto = $(this).text()
+
+                if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
+                    !texto.includes("busy,") && !texto.includes("cal.ignore")) {
+
+                    console.log(index + ") " + texto)
+
+                    var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
+                    var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
+
+
+                    var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
+                    var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
+
+
+                    // console.log(startMinute)
+                    // console.log(endMinute)
+
+                    hoursLength = (endMinute - startMinute) / 60
+                    console.log("Hours: " + hoursLength)
+                    calendarTimeAdder += hoursLength
+
+                }
+            })
+
+        else
+            $("div.ynRLnc").each(function (index) { })
 
 
         if (requiredDayText == "" || calendarTimeAdder === 0) {
