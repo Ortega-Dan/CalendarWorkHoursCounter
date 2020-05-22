@@ -7,13 +7,21 @@ var months = ['January', 'February', 'March', 'April', 'May', 'June',
 
 function convertToMilitaryTime(timeInAmPmFormatString) {
 
-    console.log(timeInAmPmFormatString)
+    var amOrPm = timeInAmPmFormatString.match("(am|pm)")[0];
+    var justTime = timeInAmPmFormatString.replace(amOrPm, "");
 
+    var cameWithMinutes = justTime.includes(":");
+    var hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
 
-    
+    var isPostMeridiem = amOrPm === "pm";
+    hour = isPostMeridiem ? hour + 12 : hour;
 
+    var finalTime = (cameWithMinutes ? ("" + hour) + ":" + justTime.split(":")[1] :
+        ("" + hour) + ":00");
 
-    return ""
+    finalTime = finalTime.padStart(5, "0");
+
+    return finalTime;
 }
 
 
@@ -42,7 +50,7 @@ $("body").keypress(function (event) {
         if (event.key === "k" | event.key === "K") {
             requiredDayText = prompt("What " + (enterpriseCalendar ? "Day and Month" : "Month and Day") +
                 " do you want to check ?\n[From the week on screen and in the format: " +
-                (enterpriseCalendar ? "Month day#" : "day# Month") + "]")
+                (enterpriseCalendar ? "day# Month" : "Month day#" )  + "]")
         }
 
         console.log(requiredDayText)
@@ -71,7 +79,7 @@ $("body").keypress(function (event) {
                     // console.log(startMinute)
                     // console.log(endMinute)
 
-                    hoursLength = (endMinute - startMinute) / 60
+                    var hoursLength = (endMinute - startMinute) / 60
                     console.log("Hours: " + hoursLength)
                     calendarTimeAdder += hoursLength
 
@@ -90,15 +98,13 @@ $("body").keypress(function (event) {
 
                     var fromTime = texto.split(" ")[0]
                     var toTime = texto.split(" ")[2]
-
                     toTime = toTime.substring(0, toTime.length - 1)
-                    toTime = convertToMilitaryTime(toTime)
 
                     fromTime = convertToMilitaryTime(fromTime)
+                    toTime = convertToMilitaryTime(toTime)
 
-
-                    var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
-                    var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
+                    var startDateTime = new Date("01/01/2000 " + fromTime);
+                    var endDateTime = new Date("01/01/2000 " + toTime);
 
 
                     var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
@@ -108,7 +114,7 @@ $("body").keypress(function (event) {
                     // console.log(startMinute)
                     // console.log(endMinute)
 
-                    hoursLength = (endMinute - startMinute) / 60
+                    var hoursLength = (endMinute - startMinute) / 60
                     console.log("Hours: " + hoursLength)
                     calendarTimeAdder += hoursLength
 
