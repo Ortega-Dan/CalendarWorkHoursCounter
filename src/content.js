@@ -14,7 +14,9 @@ function convertToMilitaryTime(timeInAmPmFormatString) {
     var hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
 
     var isPostMeridiem = amOrPm === "pm";
-    hour = isPostMeridiem ? hour + 12 : hour;
+
+    hour = isPostMeridiem && hour !== 12 ? hour + 12 : hour;
+    hour = hour === 12 && !isPostMeridiem ? 0 : hour;
 
     var finalTime = (cameWithMinutes ? ("" + hour) + ":" + justTime.split(":")[1] :
         ("" + hour) + ":00");
@@ -50,7 +52,7 @@ $("body").keypress(function (event) {
         if (event.key === "k" | event.key === "K") {
             requiredDayText = prompt("What " + (enterpriseCalendar ? "Day and Month" : "Month and Day") +
                 " do you want to check ?\n[From the week on screen and in the format: " +
-                (enterpriseCalendar ? "day# Month" : "Month day#" )  + "]")
+                (enterpriseCalendar ? "day# Month" : "Month day#") + "]")
         }
 
         console.log(requiredDayText)
