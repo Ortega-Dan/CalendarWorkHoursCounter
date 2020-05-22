@@ -1,20 +1,38 @@
+var calendarType = document.getElementsByTagName("html")[0].getAttribute("data-base-title")
+
+var enterpriseCalendar = !calendarType.includes("Google")
+
+var months = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+
+
 $("body").keypress(function (event) {
 
     var calendarTimeAdder = 0
 
-    if (event.ctrlKey === true && (event.key === "i" | event.key === "I" | event.key === "k" | event.key === "K")) {
+    if (event.ctrlKey === true && (event.key === "i" | event.key === "I"
+        | event.key === "k" | event.key === "K")) {
 
         var requiredDayText
 
         if (event.key === "i" | event.key === "I") {
-            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
             var todaysDate = new Date();
             console.log("" + todaysDate)
-            requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() + ", " + todaysDate.getFullYear()
+
+            if (enterpriseCalendar) {
+                requiredDayText = todaysDate.getDate() + " " + months[todaysDate.getMonth()] +
+                    " " + todaysDate.getFullYear()
+            }
+            else {
+                requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
+                    ", " + todaysDate.getFullYear()
+            }
         }
 
         if (event.key === "k" | event.key === "K") {
-            requiredDayText = prompt("What Month and Day do you want to check ?\n[From the week on screen and in the format Month day#]")
+            requiredDayText = prompt("What Month and Day do you want to check ?" +
+                "\n[From the week on screen and in the format Month day#]")
         }
 
         console.log(requiredDayText)
@@ -22,10 +40,11 @@ $("body").keypress(function (event) {
 
         $("div.ynRLnc").each(function (index) {
 
-
             var texto = $(this).text()
 
-            if (texto.includes(requiredDayText) && !texto.includes("Lunch,") && !texto.includes("busy,") && !texto.includes("cal.ignore")) {
+            if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
+                !texto.includes("busy,") && !texto.includes("cal.ignore")) {
+
                 console.log(index + ") " + texto)
 
                 var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
@@ -52,7 +71,8 @@ $("body").keypress(function (event) {
             alert("[" + requiredDayText + "]\n\n" + calendarTimeAdder + " hours worked")
 
             if ((8 - calendarTimeAdder) < 0) {
-                alert("[" + requiredDayText + "]\n\nYou've worked " + (8 - calendarTimeAdder) * -1 + " extra hours")
+                alert("[" + requiredDayText + "]\n\nYou've worked " +
+                    (8 - calendarTimeAdder) * -1 + " extra hours")
             } else {
                 alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
             }
