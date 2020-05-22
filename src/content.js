@@ -1,3 +1,4 @@
+// var calendarType = $("html").getAttribute("data-base-title")
 var calendarType = document.getElementsByTagName("html")[0].getAttribute("data-base-title")
 
 var enterpriseCalendar = !calendarType.includes("Google")
@@ -97,6 +98,9 @@ $("body").keypress(function (event) {
 
                     console.log(index + ") " + texto)
 
+                    if (texto === "") {
+                        return
+                    }
 
                     var fromTime = texto.split(" ")[0]
                     var toTime = texto.split(" ")[2]
@@ -124,16 +128,20 @@ $("body").keypress(function (event) {
             })
 
 
-        if (requiredDayText == "" || calendarTimeAdder === 0) {
+        if (calendarTimeAdder === 0) {
             alert("No times found for filter [" + requiredDayText + "]")
         } else {
             alert("[" + requiredDayText + "]\n\n" + calendarTimeAdder + " hours worked")
 
-            if ((8 - calendarTimeAdder) < 0) {
-                alert("[" + requiredDayText + "]\n\nYou've worked " +
-                    (8 - calendarTimeAdder) * -1 + " extra hours")
-            } else {
-                alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
+            if (requiredDayText != "") {
+
+                if ((8 - calendarTimeAdder) < 0) {
+                    alert("[" + requiredDayText + "]\n\nYou've worked " +
+                        (8 - calendarTimeAdder) * -1 + " extra hours")
+                } else {
+                    alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
+                }
+
             }
         }
 
