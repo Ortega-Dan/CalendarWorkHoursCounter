@@ -53,11 +53,11 @@ $("body").keypress(function (event) {
         if (event.key === "k" | event.key === "K") {
             requiredDayText = prompt("What " + (enterpriseCalendar ? "Day and Month" : "Month and Day") +
                 " do you want to check ?\n[From the week on screen and in the format: " +
-                (enterpriseCalendar ? "day# Month" : "Month day#") + "]\n\n"+
+                (enterpriseCalendar ? "day# Month" : "Month day#") + "]\n\n" +
                 "Or leave empty to check the entire week.")
         }
 
-        console.log(requiredDayText)
+        console.log("Checking " + (requiredDayText == "" ? "the present week" : requiredDayText))
 
 
         var calendarTimeAdder = 0
@@ -66,6 +66,8 @@ $("body").keypress(function (event) {
             $("div.ynRLnc").each(function (index) {
 
                 var texto = $(this).text()
+
+                if (texto === "") { return }
 
                 if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
                     !texto.includes("busy,") && !texto.includes("cal.ignore")) {
@@ -94,14 +96,12 @@ $("body").keypress(function (event) {
             $("div.ynRLnc").each(function (index) {
                 var texto = $(this).text()
 
+                if (texto === "") { return }
+
                 if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
                     !texto.includes("busy,") && !texto.includes("cal.ignore")) {
 
                     console.log(index + ") " + texto)
-
-                    if (texto === "") {
-                        return
-                    }
 
                     var fromTime = texto.split(" ")[0]
                     var toTime = texto.split(" ")[2]
@@ -128,6 +128,7 @@ $("body").keypress(function (event) {
                 }
             })
 
+        console.log("Total time: " + calendarTimeAdder + " hours.");
 
         if (calendarTimeAdder === 0) {
             alert("No times found for filter [" + requiredDayText + "]")
@@ -146,7 +147,7 @@ $("body").keypress(function (event) {
             }
         }
 
-        console.log("Done ******\n\n")
+        console.log("Done ******\n\n\n")
     }
 
 })
