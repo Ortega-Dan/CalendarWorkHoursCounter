@@ -7,7 +7,7 @@ and the extension will let you know how many hours you've worked\
 and how you are in comparison with an 8-hours-a-day work schedule
 
 
-If you want to know a different day hit Ctrl + k\
+If you want to know a different day hit Ctrl + Shift + k\
 and enter de day you want to check acording to the instructions in the prompt presented\
 or leave empty to calculate the entire visible week.
 
