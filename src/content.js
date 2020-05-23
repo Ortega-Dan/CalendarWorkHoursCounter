@@ -35,20 +35,19 @@ $("body").keypress(function (event) {
 
         var requiredDayText
 
-        // if (event.key === "i" | event.key === "I") {
+        if (event.key === "i" | event.key === "I") {
 
-        var todaysDate = new Date();
-        console.log("" + todaysDate)
+            var todaysDate = new Date()
 
-        if (enterpriseCalendar) {
-            requiredDayText = todaysDate.getDate() + " " + months[todaysDate.getMonth()] +
-                " " + todaysDate.getFullYear()
+            if (enterpriseCalendar) {
+                requiredDayText = todaysDate.getDate() + " " + months[todaysDate.getMonth()] +
+                    " " + todaysDate.getFullYear()
+            }
+            else {
+                requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
+                    ", " + todaysDate.getFullYear()
+            }
         }
-        else {
-            requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
-                ", " + todaysDate.getFullYear()
-        }
-        // }
 
         if (event.key === "k" | event.key === "K") {
             requiredDayText = prompt("What " + (enterpriseCalendar ? "Day and Month" : "Month and Day") +
@@ -57,7 +56,7 @@ $("body").keypress(function (event) {
                 "Or leave empty to check the entire week.")
         }
 
-        console.log("Checking " + (requiredDayText == "" ? "the present week" : requiredDayText))
+        console.log("Checking " + (requiredDayText == "" ? "the present week" : requiredDayText) + ".")
 
 
         var calendarTimeAdder = 0
@@ -69,10 +68,12 @@ $("body").keypress(function (event) {
 
                 if (texto === "") { return }
 
+                texto = texto.toLowerCase()
+
                 if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
                     !texto.includes("busy,") && !texto.includes("cal.ignore")) {
 
-                    console.log(index + ") " + texto)
+                    console.log(++index + ") " + texto)
 
                     var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
                     var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
@@ -98,10 +99,12 @@ $("body").keypress(function (event) {
 
                 if (texto === "") { return }
 
+                texto = texto.toLowerCase()
+
                 if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
                     !texto.includes("busy,") && !texto.includes("cal.ignore")) {
 
-                    console.log(index + ") " + texto)
+                    console.log(++index + ") " + texto)
 
                     var fromTime = texto.split(" ")[0]
                     var toTime = texto.split(" ")[2]
