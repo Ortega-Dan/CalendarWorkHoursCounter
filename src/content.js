@@ -7,6 +7,9 @@ var enterpriseCalendar = !calendarType.includes("Google")
 var months = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December']
 
+// Single calendar event element container... css description string
+var calEventElement = "div.ynRLnc"
+
 /** Function used with enterprise calendar to convert from Meridiam time to Military time */
 function convertToMilitaryTime(timeInAmPmFormatString) {
 
@@ -82,7 +85,7 @@ $("html").keypress(function (event) {
 
         // Function implementation for Enterprise calendar
         if (!enterpriseCalendar)
-            $("div.ynRLnc").each(function (index) {
+            $(calEventElement).each(function (index) {
 
                 var texto = $(this).text()
 
@@ -116,7 +119,7 @@ $("html").keypress(function (event) {
 
         // Function implementation for Google Calendar
         else
-            $("div.ynRLnc").each(function (index) {
+            $(calEventElement).each(function (index) {
                 var texto = $(this).text()
 
                 if (texto === "") { return }

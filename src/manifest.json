@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Calendar Day Hours Counter",
-  "version": "0.1",
+  "version": "1.0.0",
   "content_scripts": [
     {
       "matches": [
