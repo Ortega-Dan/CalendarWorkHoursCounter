@@ -56,7 +56,9 @@ $("body").keypress(function (event) {
                 "Or leave empty to check the entire week.")
         }
 
-        console.log("Checking " + (requiredDayText == "" ? "the present week" : requiredDayText) + ".")
+        requiredDayText = requiredDayText.toLowerCase()
+
+        console.log("Checking " + (requiredDayText == "" ? "the week displayed" : requiredDayText) + ".")
 
 
         var calendarTimeAdder = 0
