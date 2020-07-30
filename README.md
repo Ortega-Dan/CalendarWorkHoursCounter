@@ -1,4 +1,5 @@
-# googleCalendarWorkHoursCounter
+# CalendarWorkHoursCounter
+##### For Google Calendar
 
 
 Just hit Ctrl + i\
