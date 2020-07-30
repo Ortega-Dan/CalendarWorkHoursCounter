@@ -25,6 +25,26 @@ https://www.flaticon.com/free-icon/calendar_833634
 
 
 ______________________________________________________
+## Chrome/Chromium Deployment
+Download and uncompress\
+Then...
+
+Navigate to chrome://extensions/\
+![ext](https://i.imgur.com/SvH24jl.png)
+
+
+Enable developer mode\
+![dev](https://i.imgur.com/INuY53o.png)
+
+
+Click on Load Unpacked\
+![load](https://i.imgur.com/LQxZXyJ.png)
+
+
+Add the src folder of this project\
+![test](https://i.imgur.com/eqXo0eR.png)
+
+______________________________________________________
 \
 Here the contents of the launch.json to debug from chrome on vscode (read better from raw README.md file):
 \
