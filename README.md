@@ -45,6 +45,7 @@ Add the src folder of this project\
 ![test](https://i.imgur.com/eqXo0eR.png)
 
 ______________________________________________________
+#### Debugging
 \
 Here the contents of the launch.json to debug from chrome on vscode (read better from raw README.md file):
 \
