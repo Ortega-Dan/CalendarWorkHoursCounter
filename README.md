@@ -1,5 +1,6 @@
-# CalendarWorkHoursCounter              ![logo](https://i.imgur.com/rvu0leX.png)
+# CalendarWorkHoursCounter              
 ##### For Google Calendar
+![logo](https://i.imgur.com/rvu0leX.png)
 
 
 Just hit Ctrl + i\
