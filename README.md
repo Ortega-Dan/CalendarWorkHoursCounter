@@ -1,4 +1,4 @@
-# CalendarWorkHoursCounter
+# CalendarWorkHoursCounter              ![logo](https://i.imgur.com/rvu0leX.png)
 ##### For Google Calendar
 
 
