@@ -10,7 +10,7 @@ and how you are in comparison with an 8-hours-a-day work schedule
 
 
 If you want to know a different day hit Ctrl + Shift + k\
-and enter the day you want to check acording to the instructions in the prompt presented\
+and enter the day you want to check according to the instructions in the prompt presented\
 or leave empty to calculate the entire visible week.
 
 
