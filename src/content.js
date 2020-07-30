@@ -94,8 +94,7 @@ $("html").keypress(function (event) {
                 originalText = texto
                 texto = texto.toLowerCase()
 
-                if (texto.includes(requiredDayText) && !texto.includes("lunch,") &&
-                    !texto.includes("busy,") && !texto.includes("cal.ignore")) {
+                if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
 
                     console.log(++index + ") " + originalText)
 
@@ -127,8 +126,7 @@ $("html").keypress(function (event) {
                 originalText = texto
                 texto = texto.toLowerCase()
 
-                if (texto.includes(requiredDayText) && !texto.includes("Lunch,") &&
-                    !texto.includes("busy,") && !texto.includes("cal.ignore")) {
+                if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
 
                     console.log(++index + ") " + originalText)
 
