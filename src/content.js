@@ -42,14 +42,13 @@ function convertToMilitaryTime(timeInAmPmFormatString) {
 $("html").keypress(function (event) {
 
     // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
-    if (event.ctrlKey === true && (event.key === "i" | event.key === "I"
-        | event.key === "k" | event.key === "K")) {
+    if (event.ctrlKey === true && (event.code === "KeyI" | event.code === "KeyK")) {
 
         // Variable to hold query (entered or inferred)
         var requiredDayText
 
         // Set the query for the current day
-        if (event.key === "i" | event.key === "I") {
+        if (event.code === "KeyI") {
 
             var todaysDate = new Date()
 
@@ -66,7 +65,7 @@ $("html").keypress(function (event) {
         }
 
         // Prompting for the query when user requested
-        if (event.key === "k" | event.key === "K") {
+        if (event.code === "KeyK") {
             // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
             requiredDayText = prompt("What " + (enterpriseCalendar ? "Day and Month" : "Month and Day") +
                 " do you want to check ?\n[From the week on screen and in the format: " +
