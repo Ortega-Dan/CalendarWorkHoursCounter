@@ -1,5 +1,5 @@
 # CalendarWorkHoursCounter              
-##### For Google Calendar
+##### For Google Calendar with English (US) language setting
 ![logo](https://i.imgur.com/rvu0leX.png)
 
 
