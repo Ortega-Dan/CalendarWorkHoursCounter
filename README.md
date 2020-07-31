@@ -17,8 +17,8 @@ or leave empty to calculate the entire visible week.
 This program works in Week view of the calendar\
 (switch to week view by hitting "w" key [that is google-calendar's native functionality])
 
-<p>Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik" target="_blank">Freepik</a> from <a target="_blank" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></p>
-https://www.flaticon.com/free-icon/calendar_833634
+<p>Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik" target="_blank">Freepik</a> from <a target="_blank" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a><br>https://www.flaticon.com/free-icon/calendar_833634</p>
+
 
 
 
