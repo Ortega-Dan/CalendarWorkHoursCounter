@@ -22,7 +22,7 @@ https://www.flaticon.com/free-icon/calendar_833634
 
 
 
-
+Thanks to [@Jolmoz](https://github.com/jolmoz) for testing and bug reports.
 
 
 ______________________________________________________
