@@ -52,24 +52,16 @@ $("html").keypress(function (event) {
 
             var todaysDate = new Date()
 
-            // Enterprise Calendar format
-            if (enterpriseCalendar) {
-                requiredDayText = todaysDate.getDate() + " " + months[todaysDate.getMonth()] +
-                    " " + todaysDate.getFullYear()
-            }
             // Google Calendar format
-            else {
-                requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
-                    ", " + todaysDate.getFullYear()
-            }
+            requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
+                ", " + todaysDate.getFullYear()
+
         }
 
         // Prompting for the query when user requested
         if (event.code === "KeyK") {
             // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
-            requiredDayText = prompt("What " + (enterpriseCalendar ? "Day and Month" : "Month and Day") +
-                " do you want to check ?\n[From the week on screen and in the format: " +
-                (enterpriseCalendar ? "day# Month" : "Month day#") + "]\n\n" +
+            requiredDayText = prompt("What Month and Day do you want to check ?\n[From the week on screen and in the format: Month day#]\n\n" +
                 "Or leave empty to check the entire week.")
         }
 
@@ -84,36 +76,36 @@ $("html").keypress(function (event) {
 
         // Function implementation for Enterprise calendar
         if (!enterpriseCalendar)
-            $(calEventElement).each(function (index) {
+                $(calEventElement).each(function (index) {
 
-                var texto = $(this).text()
+            var texto = $(this).text()
 
-                if (texto === "") { return }
+            if (texto === "") { return }
 
-                originalText = texto
-                texto = texto.toLowerCase()
+            originalText = texto
+            texto = texto.toLowerCase()
 
-                if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
+            if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
 
-                    console.log(++index + ") " + originalText)
+                console.log(++index + ") " + originalText)
 
-                    var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
-                    var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
-
-
-                    var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
-                    var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
+                var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
+                var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
 
 
-                    // console.log(startMinute)
-                    // console.log(endMinute)
+                var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
+                var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
 
-                    var hoursLength = (endMinute - startMinute) / 60
-                    console.log("Hours: " + hoursLength)
-                    calendarTimeAdder += hoursLength
 
-                }
-            })
+                // console.log(startMinute)
+                // console.log(endMinute)
+
+                var hoursLength = (endMinute - startMinute) / 60
+                console.log("Hours: " + hoursLength)
+                calendarTimeAdder += hoursLength
+
+            }
+        })
 
         // Function implementation for Google Calendar
         else
