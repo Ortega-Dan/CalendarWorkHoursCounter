@@ -95,6 +95,6 @@ Based on an analysis of the year 2020. Which is a leap year.
 We've got the following **averages** for general usage.
 
 In a Monday-Friday 8-hours-a-day schedule:\
-A working month is 4.366666 working weeks\
-A working month is 21.833333 working days\
-A working month is 174.666666 working hours
+A working month is 4.366666 working weeks.\
+A working month is 21.833333 working days.\
+A working month is 174.666666 working hours.
