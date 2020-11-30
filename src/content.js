@@ -76,115 +76,61 @@ $("html").keypress(function (event) {
 
         var lastText = ""
 
-        // Function implementation for Enterprise calendar
-        if (!enterpriseCalendar)
-            $(calEventElement).each(function (index) {
+        $(calEventElement).each(function (index) {
+            var texto = $(this).text()
 
-                var texto = $(this).text()
+            if (texto === "") { return }
 
-                if (lastText == texto) { return } else { lastText = texto }
+            originalText = texto
+            texto = texto.toLowerCase()
 
-                if (texto === "") { return }
+            if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
 
-                originalText = texto
-                texto = texto.toLowerCase()
+                console.log(++index + ") " + originalText)
 
-                if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
+                var splittedText = texto.split(" ")
 
-                    console.log(++index + ") " + originalText)
+                var fromTime = splittedText[0]
+                var toTime = splittedText[2]
 
-                    var splittedText = texto.split(" ")
+                var singleDateStart = splittedText.length - 3
+                var singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
+                    splittedText[singleDateStart + 2];
 
-                    var fromTime = splittedText[0]
-                    var toTime = splittedText[2]
+                var fromDate = singleDate
+                var toDate = singleDate
 
-                    var singleDateStart = splittedText.length - 3
-                    var singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
-                        splittedText[singleDateStart + 2];
+                if (/^[A-Za-z]{2,}$/.test(fromTime)) {
+                    fromTime = splittedText[4]
+                    toTime = splittedText[10]
 
-                    var fromDate = singleDate
-                    var toDate = singleDate
-
-                    if (/^[A-Za-z]{2,}$/.test(fromTime)) {
-                        fromTime = splittedText[4]
-                        toTime = splittedText[10]
-
-                        fromDate = splittedText[0] + " " + splittedText[1] + " " +
-                            splittedText[2];
-                        toDate = splittedText[6] + " " + splittedText[7] + " " +
-                            splittedText[8];
-                    }
-
-                    toTime = toTime.substring(0, toTime.length - 1)
-
-                    var startDateTime = new Date(fromDate + " " + fromTime);
-                    var endDateTime = new Date(toDate + " " + toTime);
-
-
-                    var minutesDiff = ((endDateTime - startDateTime) / 60000)
-                    minutesDiff = Math.floor(minutesDiff)
-
-                    var hoursLength = minutesDiff / 60
-                    console.log("Hours: " + hoursLength)
-                    calendarTimeAdder += hoursLength
-
+                    fromDate = splittedText[0] + " " + splittedText[1] + " " +
+                        splittedText[2];
+                    toDate = splittedText[6] + " " + splittedText[7] + " " +
+                        splittedText[8];
                 }
-            })
 
-        // Function implementation for Google Calendar
-        else
-            $(calEventElement).each(function (index) {
-                var texto = $(this).text()
+                toTime = toTime.substring(0, toTime.length - 1)
 
-                if (texto === "") { return }
-
-                originalText = texto
-                texto = texto.toLowerCase()
-
-                if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
-
-                    console.log(++index + ") " + originalText)
-
-                    var splittedText = texto.split(" ")
-
-                    var fromTime = splittedText[0]
-                    var toTime = splittedText[2]
-
-                    var singleDateStart = splittedText.length - 3
-                    var singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
-                        splittedText[singleDateStart + 2];
-
-                    var fromDate = singleDate
-                    var toDate = singleDate
-
-                    if (/^[A-Za-z]{2,}$/.test(fromTime)) {
-                        fromTime = splittedText[4]
-                        toTime = splittedText[10]
-
-                        fromDate = splittedText[0] + " " + splittedText[1] + " " +
-                            splittedText[2];
-                        toDate = splittedText[6] + " " + splittedText[7] + " " +
-                            splittedText[8];
-                    }
-
-                    toTime = toTime.substring(0, toTime.length - 1)
-
+                // Function implementation for Enterprise calendar
+                if (enterpriseCalendar) {
                     fromTime = convertToMilitaryTime(fromTime)
                     toTime = convertToMilitaryTime(toTime)
-
-                    var startDateTime = new Date(fromDate + " " + fromTime);
-                    var endDateTime = new Date(toDate + " " + toTime);
-
-
-                    var minutesDiff = ((endDateTime - startDateTime) / 60000)
-                    minutesDiff = Math.floor(minutesDiff)
-
-                    var hoursLength = minutesDiff / 60
-                    console.log("Hours: " + hoursLength)
-                    calendarTimeAdder += hoursLength
-
                 }
-            })
+
+                var startDateTime = new Date(fromDate + " " + fromTime);
+                var endDateTime = new Date(toDate + " " + toTime);
+
+
+                var minutesDiff = ((endDateTime - startDateTime) / 60000)
+                minutesDiff = Math.floor(minutesDiff)
+
+                var hoursLength = minutesDiff / 60
+                console.log("Hours: " + hoursLength)
+                calendarTimeAdder += hoursLength
+
+            }
+        })
 
         console.log("Total time: " + calendarTimeAdder + " hours.");
 
