@@ -4,15 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        // {
-        //     "type": "node",
-        //     "request": "launch",
-        //     "name": "Method Testing",
-        //     "program": "${workspaceFolder}/testing.js",
-        //     "skipFiles": [
-        //         "<node_internals>/**"
-        //     ]
-        // },
         {
             "type": "chrome",
             "request": "attach",
@@ -33,6 +24,15 @@
             // Or you can launch a specific app configured like:
             // google-chrome --remote-debugging-port=9222 "--profile-directory=Profile 1" --app-id=kjbdgfilnfhdoflbpgamdcdgpehopbep
             // before debugging with this option
-        }
+        },
+        // {
+        //     "type": "node",
+        //     "request": "launch",
+        //     "name": "Method Testing",
+        //     "program": "${fileBasename}",
+        //     "skipFiles": [
+        //         "<node_internals>/**"
+        //     ]
+        // }
     ]
 }

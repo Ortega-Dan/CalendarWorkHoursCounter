@@ -76,36 +76,36 @@ $("html").keypress(function (event) {
 
         // Function implementation for Enterprise calendar
         if (!enterpriseCalendar)
-                $(calEventElement).each(function (index) {
+            $(calEventElement).each(function (index) {
 
-            var texto = $(this).text()
+                var texto = $(this).text()
 
-            if (texto === "") { return }
+                if (texto === "") { return }
 
-            originalText = texto
-            texto = texto.toLowerCase()
+                originalText = texto
+                texto = texto.toLowerCase()
 
-            if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
+                if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
 
-                console.log(++index + ") " + originalText)
+                    console.log(++index + ") " + originalText)
 
-                var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
-                var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
-
-
-                var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
-                var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
+                    var startDateTime = new Date("01/01/2000 " + texto.substring(0, 5));
+                    var endDateTime = new Date("01/01/2000 " + texto.substring(9, 14));
 
 
-                // console.log(startMinute)
-                // console.log(endMinute)
+                    var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
+                    var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
 
-                var hoursLength = (endMinute - startMinute) / 60
-                console.log("Hours: " + hoursLength)
-                calendarTimeAdder += hoursLength
 
-            }
-        })
+                    // console.log(startMinute)
+                    // console.log(endMinute)
+
+                    var hoursLength = (endMinute - startMinute) / 60
+                    console.log("Hours: " + hoursLength)
+                    calendarTimeAdder += hoursLength
+
+                }
+            })
 
         // Function implementation for Google Calendar
         else
@@ -121,25 +121,41 @@ $("html").keypress(function (event) {
 
                     console.log(++index + ") " + originalText)
 
-                    var fromTime = texto.split(" ")[0]
-                    var toTime = texto.split(" ")[2]
+                    var splittedText = texto.split(" ")
+
+                    var fromTime = splittedText[0]
+                    var toTime = splittedText[2]
+
+                    var singleDateStart = splittedText.length - 3
+                    var singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
+                        splittedText[singleDateStart + 2];
+
+                    var fromDate = singleDate
+                    var toDate = singleDate
+
+                    if (/^[A-Za-z]{2,}$/.test(fromTime)) {
+                        fromTime = splittedText[4]
+                        toTime = splittedText[10]
+
+                        fromDate = splittedText[0] + " " + splittedText[1] + " " +
+                            splittedText[2];
+                        toDate = splittedText[6] + " " + splittedText[7] + " " +
+                            splittedText[8];
+                    }
+
                     toTime = toTime.substring(0, toTime.length - 1)
 
                     fromTime = convertToMilitaryTime(fromTime)
                     toTime = convertToMilitaryTime(toTime)
 
-                    var startDateTime = new Date("01/01/2000 " + fromTime);
-                    var endDateTime = new Date("01/01/2000 " + toTime);
+                    var startDateTime = new Date(fromDate + " " + fromTime);
+                    var endDateTime = new Date(toDate + " " + toTime);
 
 
-                    var startMinute = (startDateTime.getHours() * 60) + startDateTime.getMinutes()
-                    var endMinute = (endDateTime.getHours() * 60) + endDateTime.getMinutes()
+                    var minutesDiff = ((endDateTime - startDateTime) / 60000)
+                    minutesDiff = Math.floor(minutesDiff)
 
-
-                    // console.log(startMinute)
-                    // console.log(endMinute)
-
-                    var hoursLength = (endMinute - startMinute) / 60
+                    var hoursLength = minutesDiff / 60
                     console.log("Hours: " + hoursLength)
                     calendarTimeAdder += hoursLength
 
