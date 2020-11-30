@@ -4,22 +4,22 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Method Testing",
-            "program": "${workspaceFolder}/testing.js",
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
-        },
+        // {
+        //     "type": "node",
+        //     "request": "launch",
+        //     "name": "Method Testing",
+        //     "program": "${workspaceFolder}/testing.js",
+        //     "skipFiles": [
+        //         "<node_internals>/**"
+        //     ]
+        // },
         {
             "type": "chrome",
             "request": "attach",
             "name": "Attach to Chrome",
             "port": 9222,
             "webRoot": "${workspaceFolder}/src",
-            "url": "https://calendar.google.com/calendar/r" //<-- this url must ...
+            "url": "https://calendar.google.com/calendar/u/0/r" //<-- this url must ...
             // ... match exactly the one in the address bar of the browser
             //
             // https://stackoverflow.com/questions/42025962/debug-chrome-extensions-with-visual-studio-code
@@ -29,6 +29,9 @@
             // 
             // In sumary ... just open chrome with:
             // google-chrome --remote-debugging-port=9222 https://calendar.google.com/
+            //
+            // Or you can launch a specific app configured like:
+            // google-chrome --remote-debugging-port=9222 "--profile-directory=Profile 1" --app-id=kjbdgfilnfhdoflbpgamdcdgpehopbep
             // before debugging with this option
         }
     ]
