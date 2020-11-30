@@ -1,5 +1,5 @@
 # CalendarWorkHoursCounter              
-### For Google Calendar with **English (US)** language setting
+### For Google Calendar with **English (US)** language setting for events of less than 24 hours long
 ![logo](https://i.imgur.com/rvu0leX.png)
 
 
