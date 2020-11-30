@@ -74,12 +74,16 @@ $("html").keypress(function (event) {
         // Initializing variable to add times
         var calendarTimeAdder = 0
 
-        var lastText = ""
+        var events = []
 
         $(calEventElement).each(function (index) {
             var texto = $(this).text()
 
             if (texto === "") { return }
+
+            if (events.includes(texto)) { return }
+
+            events.push(texto)
 
             originalText = texto
             texto = texto.toLowerCase()
