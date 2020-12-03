@@ -69,7 +69,7 @@ $("html").keypress(function (event) {
         console.log("Checking " + (requiredDayText == "" ? "the week displayed" : requiredDayText) + ".")
 
         // Converting the query to lower case for later case insensitive matching
-        requiredDayText = requiredDayText.toLowerCase()
+        requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
 
         // Initializing variable to add times
         var calendarTimeAdder = 0
