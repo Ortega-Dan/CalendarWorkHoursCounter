@@ -24,6 +24,8 @@
             // Or you can launch a specific app configured like:
             // google-chrome --remote-debugging-port=9222 "--profile-directory=Profile 1" --app-id=kjbdgfilnfhdoflbpgamdcdgpehopbep
             // before debugging with this option
+            // 
+            // TO APPLY CHANGES ONLY CLOSE THE BROWSER AND LAUNCH IT AGAIN
         },
         // {
         //     "type": "node",

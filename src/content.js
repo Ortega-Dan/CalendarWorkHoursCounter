@@ -38,6 +38,11 @@ function convertToMilitaryTime(timeInAmPmFormatString) {
     return finalTime;
 }
 
+
+function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
+    return "" + parseInt(hoursInDecimalFormat) + ":" + ((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)
+}
+
 // Listening to keypress events in the entire document
 $("html").keypress(function (event) {
 
@@ -136,22 +141,22 @@ $("html").keypress(function (event) {
             }
         })
 
-        console.log("Total time: " + calendarTimeAdder + " hours.");
+        console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
 
         // Showing results
         if (calendarTimeAdder === 0) {
             alert("No times found for filter [" + requiredDayText + "]")
         } else {
-            alert("[" + requiredDayText + "]\n\n" + calendarTimeAdder + " hours worked")
+            alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours worked")
 
             // Only show missing hours for single day queries (not for entire week)
             if (requiredDayText != "") {
 
                 if ((8 - calendarTimeAdder) < 0) {
                     alert("[" + requiredDayText + "]\n\nYou've worked " +
-                        (8 - calendarTimeAdder) * -1 + " extra hours")
+                        convertDecimalHoursToTimeFormat((8 - calendarTimeAdder) * -1) + " extra hours")
                 } else {
-                    alert("[" + requiredDayText + "]\n\nOnly " + (8 - calendarTimeAdder) + " hours missing")
+                    alert("[" + requiredDayText + "]\n\nOnly " + convertDecimalHoursToTimeFormat(8 - calendarTimeAdder) + " hours missing")
                 }
 
             }
