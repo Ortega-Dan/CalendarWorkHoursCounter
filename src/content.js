@@ -40,7 +40,7 @@ function convertToMilitaryTime(timeInAmPmFormatString) {
 
 
 function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
-    return "" + parseInt(hoursInDecimalFormat) + ":" + ((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)
+    return "" + parseInt(hoursInDecimalFormat) + ":" + ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
 // Listening to keypress events in the entire document
