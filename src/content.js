@@ -173,7 +173,9 @@ $("html").keydown(function (event) {
 
         chrome.storage.sync.get(["first"], function (result) {
 
-            console.log('first value is ' + result["first"]);
+            // console.log('first value is ' + result["first"]);
+            document.activeElement.nextSibling.textContent = ""
+            document.activeElement.value = result["first"]
 
         });
 
@@ -183,7 +185,9 @@ $("html").keydown(function (event) {
 
         chrome.storage.sync.get(["second"], function (result) {
 
-            console.log('second value is ' + result["second"]);
+            // console.log('second value is ' + result["second"]);
+            document.activeElement.nextSibling.textContent = ""
+            document.activeElement.value = result["second"]
 
         });
 
