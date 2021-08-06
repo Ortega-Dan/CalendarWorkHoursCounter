@@ -3,19 +3,23 @@
 ![logo](https://i.imgur.com/rvu0leX.png)
 
 
-Just hit Ctrl + i\
+Just hit Alt + i\
 and the extension will let you know how many hours you've worked\
 (how many hours you have in your google calendar for the current day)\
 and how you are in comparison with an 8-hours-a-day work schedule
 
 
-If you want to know a different day hit Ctrl + Shift + k\
+If you want to know a different day hit Alt + k\
 and enter the day you want to check according to the instructions in the prompt presented\
 or leave empty to calculate the entire visible week.
 
 
 This program works in Week view of the calendar\
 (switch to week view by hitting "w" key [that is google-calendar's native functionality])
+
+It also helps automating insertion of activity prefixes using the extension's popup window.
+
+![pref](https://i.imgur.com/bcUoMyc.png)
 
 <p>Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik" target="_blank">Freepik</a> from <a target="_blank" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a><br>https://www.flaticon.com/free-icon/calendar_833634</p>
 
