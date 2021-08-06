@@ -44,10 +44,13 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
 }
 
 // Listening to keypress events in the entire document
-$("html").keypress(function (event) {
+$("html").keydown(function (event) {
 
     // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
-    if (event.ctrlKey === true && (event.code === "KeyI" | event.code === "KeyK")) {
+    if (event.altKey === true && (event.code === "KeyI" | event.code === "KeyK")) {
+
+        event.preventDefault()
+        event.stopPropagation()
 
         // Variable to hold query (entered or inferred)
         var requiredDayText
@@ -163,6 +166,25 @@ $("html").keypress(function (event) {
         }
 
         console.log("Done ******\n\n\n")
+
+    }
+
+    // insert first prefix
+    if (event.altKey === true && event.code === "KeyJ") {
+        chrome.storage.sync.get(["first"], function (result) {
+            // console.log('first value is ' + result["first"]);
+            document.activeElement.nextSibling.textContent = ""
+            document.activeElement.value = result["first"]
+        });
+    }
+
+    // insert second prefix
+    if (event.altKey === true && event.code === "KeyL") {
+        chrome.storage.sync.get(["second"], function (result) {
+            // console.log('second value is ' + result["second"]);
+            document.activeElement.nextSibling.textContent = ""
+            document.activeElement.value = result["second"]
+        });
     }
 
 })
