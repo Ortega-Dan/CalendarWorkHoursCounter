@@ -3,13 +3,15 @@
   "name": "Calendar Hours Counter",
   "description": "(For Google Calendar configured with English (US) language)",
   "version": "1.4.3",
-	"browser_action": {
-    	"default_icon": "calendar16.png",
-    	"default_popup": "popup.html"
-    },
-    "icons": { "16": "calendar16.png",
-              "48": "calendar48.png",
-            "128": "calendar128.png" },
+  "browser_action": {
+    "default_icon": "calendar16.png",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "calendar16.png",
+    "48": "calendar48.png",
+    "128": "calendar128.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -20,5 +22,8 @@
         "content.js"
       ]
     }
+  ],
+  "permissions": [
+    "storage"
   ]
 }
