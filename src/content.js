@@ -1,8 +1,3 @@
-// Finding if it is Google Calendar, or Enterprise (Google-Calendar based).
-var calendarType = document.getElementsByTagName("html")[0].getAttribute("data-base-title")
-// var calendarType = $("html").getAttribute("data-base-title")
-var enterpriseCalendar = !calendarType.includes("Google")
-
 // Setting a month conversion helper array
 var months = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December']
@@ -10,17 +5,22 @@ var months = ['January', 'February', 'March', 'April', 'May', 'June',
 // Single calendar event element container... css description string
 var calEventElement = "div.ynRLnc"
 
-/** Function used with enterprise calendar to convert from Meridiam time to Military time */
-function convertToMilitaryTime(timeInAmPmFormatString) {
+/** Function used with enterprise calendar to convert from Meridian time to Military time */
+function standardizeToInternationalTime(timeInAmPmFormatString) {
 
     // Extracting am or pm
-    var amOrPm = timeInAmPmFormatString.match("(am|pm)")[0];
+    var isAmPm = timeInAmPmFormatString.match("(am|pm)");
+    if (isAmPm === null) {
+        return timeInAmPmFormatString;
+    }
+
+    var amOrPm = isAmPm[0];
     var isPostMeridiem = amOrPm === "pm";
 
     // Extracting the time
     var justTime = timeInAmPmFormatString.replace(amOrPm, "");
 
-    // Finding if it came with minuts and the hour
+    // Finding if it came with minutes and the hour
     var cameWithMinutes = justTime.includes(":");
     var hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
 
@@ -85,22 +85,22 @@ $("html").keydown(function (event) {
         var events = []
 
         $(calEventElement).each(function (index) {
-            var texto = $(this).text()
+            var text = $(this).text()
 
-            if (texto === "") { return }
+            if (text === "") { return }
 
-            if (events.includes(texto)) { return }
+            if (events.includes(text)) { return }
 
-            events.push(texto)
+            events.push(text)
 
-            originalText = texto
-            texto = texto.toLowerCase()
+            originalText = text
+            text = text.toLowerCase()
 
-            if (texto.includes(requiredDayText) && !texto.includes("cal.ignore")) {
+            if (text.includes(requiredDayText) && !text.includes("cal.ignore")) {
 
                 console.log(++index + ") " + originalText)
 
-                var splittedText = texto.split(" ")
+                var splittedText = text.split(" ")
 
                 var fromTime = splittedText[0]
                 var toTime = splittedText[2]
@@ -125,10 +125,9 @@ $("html").keydown(function (event) {
                 toTime = toTime.substring(0, toTime.length - 1)
 
                 // Function implementation for Enterprise calendar
-                if (enterpriseCalendar) {
-                    fromTime = convertToMilitaryTime(fromTime)
-                    toTime = convertToMilitaryTime(toTime)
-                }
+
+                fromTime = standardizeToInternationalTime(fromTime)
+                toTime = standardizeToInternationalTime(toTime)
 
                 var startDateTime = new Date(fromDate + " " + fromTime);
                 var endDateTime = new Date(toDate + " " + toTime);
