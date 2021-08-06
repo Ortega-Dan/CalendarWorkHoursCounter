@@ -15,8 +15,8 @@
 <body>
   <h3>Calendar Hours Counter</h3>
   <ul style="min-width: 350px;">
-    <li>Count Current Day Hours: Ctrl + I</li>
-    <li>Count Week Hours with filter: Ctrl + Shift + K<br>
+    <li>Count Current Day Hours: Alt + I</li>
+    <li>Count Week Hours with filter: Alt + K<br>
       (From there you can check for different days according to instructions or query a specific term. All searches are
       case insensitive).</li>
   </ul>
@@ -26,14 +26,23 @@
   <p style="color: darkblue;">It works in Week view of the calendar<br>
     (Switch to week view by hitting "w" key [Which is google-calendar's native functionality]).</p>
 
-  <p>It compares against 8 hours for current-day, or specific day queries, or counts hours for the entire week for empty
-    queries.</p>
+  <p>It compares against 8 hours for current-day, and counts hours for the entire week for empty queries.</p>
   <p>To ignore events write cal.ignore somewhere in the event title.</p>
 
-  <input id="first"
-         type="text">
-  <input id="second"
-         type="text">
+  <p>
+    To insert an activity prefix in an event title, set the following boxes and use the corresponding shortcut while editing:      
+      <div style="display: inline-block">
+      <label for="first" style="margin-left: 50px;">Alt + J</label><br>
+    <input id="first"
+           type="text">
+      </div>
+    <div style="display: inline-block">
+      <label for="second" style="margin-left: 50px;">Alt + L</label><br>
+    <input id="second"
+           type="text">
+        </div>
+      
+  </p>
 
   <p>Source Code: <a href="https://github.com/Ortega-Dan/CalendarWorkHoursCounter"
        target="_blank">https://github.com/Ortega-Dan/CalendarWorkHoursCounter</a></p>
