@@ -163,6 +163,12 @@ $("html").keypress(function (event) {
         }
 
         console.log("Done ******\n\n\n")
+
+        chrome.storage.sync.get(["hola"], function (result) {
+
+            console.log('hola value is ' + result["hola"]);
+
+        });
     }
 
 })

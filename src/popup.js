@@ -2,7 +2,7 @@ console.log("popupjs loaded");
 
 function store() {
 
-    chrome.storage.sync.set({ hola: "quetal" }, function () {
+    chrome.storage.sync.set({ "hola": "quetal" }, function () {
 
         console.log("setting");
 
@@ -12,9 +12,9 @@ function store() {
 
 function read() {
 
-    chrome.storage.sync.get([hola], function (result) {
+    chrome.storage.sync.get(["hola"], function (result) {
 
-        console.log('hola value is ' + result.key);
+        console.log('hola value is ' + result["hola"]);
 
     });
 
