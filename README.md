@@ -49,8 +49,8 @@ ______________________________________________________
 #### Debugging
 \
 Here the contents of the launch.json to debug from chrome on vscode (read better from raw README.md file):
-\
-\
+
+```jsonc
 {
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
@@ -86,7 +86,7 @@ Here the contents of the launch.json to debug from chrome on vscode (read better
         }
     ]
 }
-
+```
 ______________________________________________________
 
 ## Interesting Info
