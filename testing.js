@@ -1,4 +1,4 @@
-function convertToMilitaryTime(timeInAmPmFormatString) {
+function standardizeToInternationalTime(timeInAmPmFormatString) {
 
     var amOrPm = timeInAmPmFormatString.match("(am|pm)")[0];
     var justTime = timeInAmPmFormatString.replace(amOrPm, "");
@@ -22,32 +22,32 @@ function convertToMilitaryTime(timeInAmPmFormatString) {
 
 var test;
 test = "8am";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "8pm";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "8:05am";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "8:05pm";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 
 console.log("");
 
 test = "11am";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "11pm";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "11:05am";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "11:05pm";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 
 console.log("");
 
 test = "12am";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "12pm";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "12:05am";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "12:05pm";
-console.log("Test: " + test + ".  Result: " + convertToMilitaryTime(test));
+console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));

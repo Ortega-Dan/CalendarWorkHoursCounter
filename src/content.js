@@ -6,19 +6,19 @@ var months = ['January', 'February', 'March', 'April', 'May', 'June',
 var calEventElement = "div.ynRLnc"
 
 /** Function used with enterprise calendar to convert from Meridian time to Military time */
-function standardizeToInternationalTime(timeInAmPmFormatString) {
+function standardizeToInternationalTime(receivedFormatTimeString) {
 
     // Extracting am or pm
-    var isAmPm = timeInAmPmFormatString.match("(am|pm)");
+    var isAmPm = receivedFormatTimeString.match("(am|pm)");
     if (isAmPm === null) {
-        return timeInAmPmFormatString;
+        return receivedFormatTimeString;
     }
 
     var amOrPm = isAmPm[0];
     var isPostMeridiem = amOrPm === "pm";
 
     // Extracting the time
-    var justTime = timeInAmPmFormatString.replace(amOrPm, "");
+    var justTime = receivedFormatTimeString.replace(amOrPm, "");
 
     // Finding if it came with minutes and the hour
     var cameWithMinutes = justTime.includes(":");
