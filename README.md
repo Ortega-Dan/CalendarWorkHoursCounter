@@ -26,7 +26,7 @@ It also helps automating insertion of activity prefixes using the extension's po
 
 
 
-Thanks to [@Jolmoz](https://github.com/jolmoz) for testing and bug reports, and [@danielrincon](https://github.com/danielrincon) for some bug and typo fixes.
+Thanks to [@Jolmoz](https://github.com/jolmoz) for testing and bug reports, and [@danielrinconr](https://github.com/danielrinconr) for some bug and typo fixes.
 
 
 ______________________________________________________
