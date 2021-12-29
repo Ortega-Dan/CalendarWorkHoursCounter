@@ -103,6 +103,11 @@ $("html").keydown(function (event) {
                 var splittedText = text.split(" ")
 
                 var fromTime = splittedText[0]
+                // ignoring events with no time span
+                if (fromTime[fromTime.length - 1] == ',') {
+                    console.log("Ignoring event with no time span.");
+                    return;
+                }
                 var toTime = splittedText[2]
 
                 var singleDateStart = splittedText.length - 3
