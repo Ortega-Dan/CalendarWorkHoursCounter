@@ -96,7 +96,8 @@ $("html").keydown(function (event) {
             originalText = text
             text = text.toLowerCase()
 
-            if (text.includes(requiredDayText) && !text.includes("cal.ignore")) {
+            // ignoring "cal.ignore"s and external-calendar-without-details busy times
+            if (text.includes(requiredDayText) && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ")) {
 
                 console.log(++index + ") " + originalText)
 
