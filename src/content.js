@@ -43,6 +43,17 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
     return "" + parseInt(hoursInDecimalFormat) + ":" + ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
+function showHoursDiffTo(hoursSum, hoursThreshold, label) {
+
+    if ((hoursThreshold - hoursSum) < 0) {
+        alert("[" + label + "]\n\nYou've worked " +
+            convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
+    } else {
+        alert("[" + label + "]\n\nOnly " + convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum) + " hours missing")
+    }
+
+}
+
 // Listening to keypress events in the entire document
 $("html").keydown(function (event) {
 
@@ -151,22 +162,22 @@ $("html").keydown(function (event) {
 
         console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
 
+        if (requiredDayText == "") {
+            requiredDayText = "Entire Week"
+        }
+
         // Showing results
         if (calendarTimeAdder === 0) {
             alert("No times found for filter [" + requiredDayText + "]")
         } else {
             alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours worked")
 
-            // Only show missing hours for single day queries (not for entire week)
-            if (requiredDayText != "") {
-
-                if ((8 - calendarTimeAdder) < 0) {
-                    alert("[" + requiredDayText + "]\n\nYou've worked " +
-                        convertDecimalHoursToTimeFormat((8 - calendarTimeAdder) * -1) + " extra hours")
-                } else {
-                    alert("[" + requiredDayText + "]\n\nOnly " + convertDecimalHoursToTimeFormat(8 - calendarTimeAdder) + " hours missing")
-                }
-
+            if (requiredDayText == "Entire Week") {
+                // show hours diff for week query
+                showHoursDiffTo(calendarTimeAdder, 40, requiredDayText)
+            } else {
+                // Show hours diff for single day query
+                showHoursDiffTo(calendarTimeAdder, 8, requiredDayText)
             }
         }
 
