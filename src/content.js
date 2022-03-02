@@ -72,16 +72,16 @@ $("html").keydown(function (event) {
             var todaysDate = new Date()
 
             // Google Calendar format
-            requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
-                ", " + todaysDate.getFullYear()
-
+            requiredDayText = "" + todaysDate.getDate()
+            // requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
+            //     ", " + todaysDate.getFullYear()
         }
 
         // Prompting for the query when user requested
         if (event.code === "KeyK") {
             // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
-            requiredDayText = prompt("What Month and Day do you want to check ?\n[From the week on screen and in the format: Month day#]\n\n" +
-                "Or leave empty to check the entire week.")
+            requiredDayText = prompt("What Day Number do you want to check ?\n[From the week on screen]\n\n" +
+                "Or leave empty to check the entire week.").trim()
         }
 
         // Logging the query (entered or inferred)
@@ -107,8 +107,11 @@ $("html").keydown(function (event) {
             originalText = text
             text = text.toLowerCase()
 
+            // getting current record calendar day number
+            let textDay = getRecordTextDay(text)
+
             // ignoring "cal.ignore"s and external-calendar-without-details busy times
-            if (text.includes(requiredDayText) && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ")) {
+            if ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ")) {
 
                 console.log(++index + ") " + originalText)
 
@@ -204,3 +207,10 @@ $("html").keydown(function (event) {
     }
 
 })
+
+function getRecordTextDay(text) {
+    let toIndex = text.lastIndexOf(",")
+    let fromIndex = text.substring(0, toIndex).lastIndexOf(" ") + 1
+
+    return text.substring(fromIndex, toIndex)
+}
