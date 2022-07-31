@@ -189,7 +189,7 @@ $("html").keydown(function (event) {
     }
 
     // insert first prefix
-    if (event.altKey === true && event.code === "KeyJ") {
+    if (event.altKey === true && event.code === "KeyH") {
         chrome.storage.sync.get(["first"], function (result) {
             // console.log('first value is ' + result["first"]);
             document.activeElement.nextSibling.textContent = ""
@@ -197,12 +197,21 @@ $("html").keydown(function (event) {
         });
     }
 
-    // insert second prefix
-    if (event.altKey === true && event.code === "KeyL") {
+    // insert first prefix
+    if (event.altKey === true && event.code === "KeyJ") {
         chrome.storage.sync.get(["second"], function (result) {
-            // console.log('second value is ' + result["second"]);
+            // console.log('first value is ' + result["first"]);
             document.activeElement.nextSibling.textContent = ""
             document.activeElement.value = result["second"]
+        });
+    }
+
+    // insert second prefix
+    if (event.altKey === true && event.code === "KeyL") {
+        chrome.storage.sync.get(["third"], function (result) {
+            // console.log('second value is ' + result["second"]);
+            document.activeElement.nextSibling.textContent = ""
+            document.activeElement.value = result["third"]
         });
     }
 
