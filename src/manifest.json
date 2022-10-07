@@ -1,12 +1,8 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Calendar Hours Counter",
   "description": "(For Google Calendar configured with English (US) language)",
   "version": "1.8.4",
-  "browser_action": {
-    "default_icon": "calendar16.png",
-    "default_popup": "popup.html"
-  },
   "icons": {
     "16": "calendar16.png",
     "48": "calendar48.png",
@@ -25,5 +21,10 @@
   ],
   "permissions": [
     "storage"
-  ]
+  ],
+  "action": {
+    "default_icon": "calendar16.png",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {}
 }
