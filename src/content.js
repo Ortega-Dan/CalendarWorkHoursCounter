@@ -111,7 +111,7 @@ $("html").keydown(function (event) {
             let textDay = getSingleDayRecordDayNumber(text)
 
             // ignoring "cal.ignore"s and external-calendar-without-details busy times
-            if (textDay != null && (textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", Declined, ")) {
+            if (textDay != null && ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", declined, "))) {
 
                 console.log(++index + ") " + originalText)
 
