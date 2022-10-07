@@ -108,10 +108,10 @@ $("html").keydown(function (event) {
             text = text.toLowerCase()
 
             // getting current record calendar day number
-            let textDay = getRecordTextDay(text)
+            let textDay = getSingleDayRecordDayNumber(text)
 
             // ignoring "cal.ignore"s and external-calendar-without-details busy times
-            if ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ")) {
+            if (textDay != null && (textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", Declined, ")) {
 
                 console.log(++index + ") " + originalText)
 
@@ -217,9 +217,12 @@ $("html").keydown(function (event) {
 
 })
 
-function getRecordTextDay(text) {
+// returns null if record doesn't meet the standard format for single day records
+function getSingleDayRecordDayNumber(text) {
     let toIndex = text.lastIndexOf(",")
     let fromIndex = text.substring(0, toIndex).lastIndexOf(" ") + 1
 
-    return text.substring(fromIndex, toIndex)
+    numberSpaceText = text.substring(fromIndex, toIndex)
+
+    return isNaN(numberSpaceText) == false ? numberSpaceText : null
 }
