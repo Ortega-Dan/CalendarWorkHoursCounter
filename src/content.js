@@ -111,7 +111,7 @@ $("html").keydown(function (event) {
             let textDay = getSingleDayRecordDayNumber(text)
 
             // ignoring "cal.ignore"s and external-calendar-without-details busy times
-            if (textDay != null && ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", declined, "))) {
+            if (textDay != null && ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", declined, ") && !text.includes(", tentative, "))) {
 
                 console.log(++index + ") " + originalText)
 
@@ -171,7 +171,7 @@ $("html").keydown(function (event) {
 
         // Showing results
         if (calendarTimeAdder === 0) {
-            alert("No times found for filter [" + requiredDayText + "]")
+            alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
         } else {
             alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours worked")
 
