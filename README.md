@@ -52,7 +52,7 @@ Add the src folder of this project\
 ______________________________________________________
 #### Debugging
 \
-Here the contents of the launch.json to debug from chrome on vscode (read better from raw README.md file):
+Here the contents of the launch.json to debug from chrome on vscode:
 
 ```jsonc
 {
