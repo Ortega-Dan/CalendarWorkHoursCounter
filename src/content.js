@@ -171,7 +171,8 @@ $("html").keydown(function (event) {
 
         // Showing results
         if (calendarTimeAdder === 0) {
-            alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
+            alert("No active events found for filter [" + requiredDayText + "]")
+            // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
         } else {
             alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours worked")
 
