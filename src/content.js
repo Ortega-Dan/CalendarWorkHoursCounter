@@ -1,9 +1,13 @@
 // Setting a month conversion helper array
-var months = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December']
+// const months = ['January', 'February', 'March', 'April', 'May', 'June',
+//     'July', 'August', 'September', 'October', 'November', 'December']
 
 // Single calendar event element container... css description string
-var calEventElement = "div.ynRLnc"
+const calEventElement = "div.ynRLnc"
+
+// week and daily hours margins
+const weeklyHoursMargin = 40
+const dailyHoursMargin = 8
 
 /** Function used with enterprise calendar to convert from Meridian time to Military time */
 function standardizeToInternationalTime(receivedFormatTimeString) {
@@ -178,10 +182,10 @@ $("html").keydown(function (event) {
 
             if (requiredDayText == "Entire Week") {
                 // show hours diff for week query
-                showHoursDiffTo(calendarTimeAdder, 40, requiredDayText)
+                showHoursDiffTo(calendarTimeAdder, weeklyHoursMargin, requiredDayText)
             } else {
                 // Show hours diff for single day query
-                showHoursDiffTo(calendarTimeAdder, 8, requiredDayText)
+                showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText)
             }
         }
 
