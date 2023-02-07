@@ -47,13 +47,24 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
     return "" + parseInt(hoursInDecimalFormat) + ":" + ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
-function showHoursDiffTo(hoursSum, hoursThreshold, label) {
+function showHoursDiffTo(hoursSum, hoursThreshold, label, showFinishingTime = false) {
 
     if ((hoursThreshold - hoursSum) < 0) {
         alert("[" + label + "]\n\nYou've worked " +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
     } else {
-        alert("[" + label + "]\n\nOnly " + convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum) + " hours missing")
+        var timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
+
+        var dateTime = new Date()
+
+        dateTime.setHours(dateTime.getHours() + parseInt(timeDiffString.split(":")[0]))
+        dateTime.setMinutes(dateTime.getMinutes() + parseInt(timeDiffString.split(":")[1]))
+
+        var hours = dateTime.getHours()
+        alert("[" + label + "]\n\n" + timeDiffString + " hours missing" +
+            (showFinishingTime ?
+                "\n\nFinishing by " + (hours == 12 ? hours : hours % 12) + ":" + ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") : ""))
+
     }
 
 }
@@ -62,7 +73,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label) {
 $("html").keydown(function (event) {
 
     // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
-    if (event.altKey === true && (event.code === "KeyI" | event.code === "KeyK")) {
+    if (event.altKey === true && (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO")) {
 
         event.preventDefault()
         event.stopPropagation()
@@ -71,7 +82,7 @@ $("html").keydown(function (event) {
         var requiredDayText
 
         // Set the query for the current day
-        if (event.code === "KeyI") {
+        if (event.code === "KeyI" || event.code === "KeyO") {
 
             var todaysDate = new Date()
 
@@ -185,7 +196,7 @@ $("html").keydown(function (event) {
                 showHoursDiffTo(calendarTimeAdder, weeklyHoursMargin, requiredDayText)
             } else {
                 // Show hours diff for single day query
-                showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText)
+                showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText, event.code === "KeyO")
             }
         }
 
