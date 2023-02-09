@@ -52,6 +52,8 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, showFinishingTime = fa
     if ((hoursThreshold - hoursSum) < 0) {
         alert("[" + label + "]\n\nYou've worked " +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
+    } else if ((hoursThreshold - hoursSum) == 0) {
+        alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + "!")
     } else {
         var timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
 
