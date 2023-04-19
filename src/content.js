@@ -42,15 +42,22 @@ function standardizeToInternationalTime(receivedFormatTimeString) {
     return finalTime;
 }
 
+function getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime) {
+    var minutesDiff = ((endDateTime - startDateTime) / 60000)
+    minutesDiff = Math.floor(minutesDiff)
+
+    return minutesDiff / 60
+}
+
 
 function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
     return "" + parseInt(hoursInDecimalFormat) + ":" + ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
-function showHoursDiffTo(hoursSum, hoursThreshold, label, showFinishingTime = false) {
+function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime = false) {
 
     if ((hoursThreshold - hoursSum) < 0) {
-        alert("[" + label + "]\n\nYou've worked " +
+        alert("[" + label + "]\n\n" + (displayFinishingTime ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
     } else if ((hoursThreshold - hoursSum) == 0) {
         alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + "!")
@@ -64,7 +71,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, showFinishingTime = fa
 
         var hours = dateTime.getHours()
         alert("[" + label + "]\n\n" + timeDiffString + " hours missing" +
-            (showFinishingTime ?
+            (displayFinishingTime ?
                 "\n\nFinishing by " + (hours == 12 ? hours : hours % 12) + ":" + ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") : ""))
 
     }
@@ -82,16 +89,17 @@ $("html").keydown(function (event) {
 
         // Variable to hold query (entered or inferred)
         var requiredDayText
+        var nowDateTime = new Date()
+
+        var showFinishingTime = event.code === "KeyO"
 
         // Set the query for the current day
         if (event.code === "KeyI" || event.code === "KeyO") {
 
-            var todaysDate = new Date()
-
             // Google Calendar format
-            requiredDayText = "" + todaysDate.getDate()
-            // requiredDayText = months[todaysDate.getMonth()] + " " + todaysDate.getDate() +
-            //     ", " + todaysDate.getFullYear()
+            requiredDayText = "" + nowDateTime.getDate()
+            // requiredDayText = months[nowDateTime.getMonth()] + " " + nowDateTime.getDate() +
+            //     ", " + nowDateTime.getFullYear()
         }
 
         // Prompting for the query when user requested
@@ -109,6 +117,7 @@ $("html").keydown(function (event) {
 
         // Initializing variable to add times
         var calendarTimeAdder = 0
+        var passedHoursAdder = 0
 
         var events = []
 
@@ -169,13 +178,19 @@ $("html").keydown(function (event) {
                 var startDateTime = new Date(fromDate + " " + fromTime);
                 var endDateTime = new Date(toDate + " " + toTime);
 
-
-                var minutesDiff = ((endDateTime - startDateTime) / 60000)
-                minutesDiff = Math.floor(minutesDiff)
-
-                var hoursLength = minutesDiff / 60
+                var hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
                 console.log("Hours: " + hoursLength)
                 calendarTimeAdder += hoursLength
+
+                // checking how many minutes or hours have actually passed
+                // (for now only used in current day finish estimation with KeyO)
+                if (startDateTime < nowDateTime) {
+                    if (endDateTime < nowDateTime) {
+                        passedHoursAdder += hoursLength
+                    } else {
+                        passedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
+                    }
+                }
 
             }
         })
@@ -191,14 +206,18 @@ $("html").keydown(function (event) {
             alert("No active events found for filter [" + requiredDayText + "]")
             // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
         } else {
-            alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours worked")
+            alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(showFinishingTime ? passedHoursAdder : calendarTimeAdder) + " hours " + (showFinishingTime ? "worked" : "recorded"))
 
             if (requiredDayText == "Entire Week") {
                 // show hours diff for week query
                 showHoursDiffTo(calendarTimeAdder, weeklyHoursMargin, requiredDayText)
             } else {
                 // Show hours diff for single day query
-                showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText, event.code === "KeyO")
+                if (showFinishingTime) {
+                    showHoursDiffTo(passedHoursAdder, dailyHoursMargin, requiredDayText, true)
+                } else {
+                    showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText)
+                }
             }
         }
 

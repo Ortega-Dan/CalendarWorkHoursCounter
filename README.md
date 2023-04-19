@@ -4,10 +4,11 @@
 
 
 Just hit Alt + i\
-and the extension will let you know how many hours you've worked\
+and the extension will let you know how many hours you've recorded\
 (how many hours you have in your google calendar for the current day)\
 and how you are in comparison with an 8-hours-a-day work schedule
 
+The Alt + o option shows the actual hours that are recorded and that have also already passed, allowing you to know by displaying for you how many hours are missing in practice, and around what time you will be done for the day.
 
 If you want to know a different day hit Alt + k\
 and enter the day you want to check according to the instructions in the prompt presented\
