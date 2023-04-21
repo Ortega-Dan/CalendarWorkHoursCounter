@@ -72,7 +72,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime =
         var hours = dateTime.getHours()
         alert("[" + label + "]\n\n" + timeDiffString + " hours missing" +
             (displayFinishingTime ?
-                "\n\nFinishing by " + (hours == 12 ? hours : hours % 12) + ":" + ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") : ""))
+                "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" + ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : ""))
 
     }
 
