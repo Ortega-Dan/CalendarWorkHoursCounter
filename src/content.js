@@ -4,6 +4,8 @@
 
 // Single calendar event element container... css description string
 const calEventElement = "div.ynRLnc"
+const firstDayElement = "div.KSxb4d"
+const monthsAndYearsOfViewElement = "div.rSoRzd"
 
 // week and daily hours margins
 const weeklyHoursMargin = 40
@@ -83,6 +85,16 @@ $("html").keydown(function (event) {
 
     // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
     if (event.altKey === true && (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO")) {
+
+        // getting date of first day in view
+        var firstDayInWeek = $(firstDayElement).first().text()
+        // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
+        var yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[1]
+        if (isNaN(yearOfFirstDayInWeek) == true) {
+            yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[3]
+        }
+        var monthOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[0]
+        var dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
 
         event.preventDefault()
         event.stopPropagation()
@@ -177,6 +189,10 @@ $("html").keydown(function (event) {
 
                 // getting actual dates
                 var startDateTime = new Date(fromDate + " " + fromTime);
+                // not including and event that starts before the beginning of the first day in the current view
+                if (startDateTime < dateOfFirstDayInView) {
+                    return
+                }
                 var endDateTime = new Date(toDate + " " + toTime);
 
                 var hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
