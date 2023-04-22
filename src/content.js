@@ -134,7 +134,7 @@ $("html").keydown(function (event) {
             text = text.toLowerCase()
 
             // getting current record calendar day number
-            let textDay = getSingleDayRecordDayNumber(text)
+            let textDay = getSingleDayStartingDayNumber(text)
 
             // ignoring "cal.ignore"s and external-calendar-without-details busy times
             if (textDay != null && ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", declined, ") && !text.includes(", tentative, "))) {
@@ -158,6 +158,7 @@ $("html").keydown(function (event) {
                 var fromDate = singleDate
                 var toDate = singleDate
 
+                // getting time and date for single day events that start and end in different days
                 if (/^[A-Za-z]{2,}$/.test(fromTime)) {
                     fromTime = splittedText[4]
                     toTime = splittedText[10]
@@ -170,11 +171,11 @@ $("html").keydown(function (event) {
 
                 toTime = toTime.substring(0, toTime.length - 1)
 
-                // Function implementation for Enterprise calendar
-
+                // converting to international time format
                 fromTime = standardizeToInternationalTime(fromTime)
                 toTime = standardizeToInternationalTime(toTime)
 
+                // getting actual dates
                 var startDateTime = new Date(fromDate + " " + fromTime);
                 var endDateTime = new Date(toDate + " " + toTime);
 
@@ -255,11 +256,16 @@ $("html").keydown(function (event) {
 })
 
 // returns null if record doesn't meet the standard format for single day records
-function getSingleDayRecordDayNumber(text) {
+function getSingleDayStartingDayNumber(text) {
     let toIndex = text.lastIndexOf(",")
     let fromIndex = text.substring(0, toIndex).lastIndexOf(" ") + 1
 
     numberSpaceText = text.substring(fromIndex, toIndex)
 
-    return isNaN(numberSpaceText) == false ? numberSpaceText : null
+    if (isNaN(numberSpaceText) == false) {
+        return numberSpaceText
+    } else {
+        numberSpaceText = text.split(" ")[1].replace(",", "")
+        return isNaN(numberSpaceText) == false ? numberSpaceText : null
+    }
 }
