@@ -8,8 +8,10 @@
             "type": "chrome",
             "request": "attach",
             "name": "Attach to Chrome",
+            "preLaunchTask": "launch-chrome", // WARNING: make sure the tasks.json endsPattern regexp string really matches what your command execution is showing for the process to start efficiently
             "port": 9222,
             "webRoot": "${workspaceFolder}/src",
+            "internalConsoleOptions": "openOnSessionStart",
             "url": "https://calendar.google.com/calendar/u/0/r" //<-- this url must ...
             // ... match exactly the one in the address bar of the browser
             //

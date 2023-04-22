@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "launch-chrome",
+            "type": "shell",
+            "command": "google-chrome --remote-debugging-port=9222 https://calendar.google.com/",
+            "isBackground": true,
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated",
+                "clear": true
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": ""
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": ".*"
+                    },
+                    "endsPattern": {
+                        "regexp": ".*Created TensorFlow Lite.*"
+                    }
+                }
+            }
+        }
+    ]
+}
