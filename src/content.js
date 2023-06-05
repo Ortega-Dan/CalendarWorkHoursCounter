@@ -84,7 +84,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime =
 $("html").keydown(function (event) {
 
     // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
-    if (event.altKey === true && (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO")) {
+    if (event.altKey === true && (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO" || event.code === "KeyM")) {
 
         // getting date of first day in view
         var firstDayInWeek = $(firstDayElement).first().text()
