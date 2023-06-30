@@ -15,27 +15,27 @@ const dailyHoursMargin = 8
 function standardizeToInternationalTime(receivedFormatTimeString) {
 
     // Extracting am or pm
-    var isAmPm = receivedFormatTimeString.match("(am|pm)");
+    let isAmPm = receivedFormatTimeString.match("(am|pm)");
     if (isAmPm === null) {
         return receivedFormatTimeString;
     }
 
-    var amOrPm = isAmPm[0];
-    var isPostMeridiem = amOrPm === "pm";
+    let amOrPm = isAmPm[0];
+    let isPostMeridiem = amOrPm === "pm";
 
     // Extracting the time
-    var justTime = receivedFormatTimeString.replace(amOrPm, "");
+    let justTime = receivedFormatTimeString.replace(amOrPm, "");
 
     // Finding if it came with minutes and the hour
-    var cameWithMinutes = justTime.includes(":");
-    var hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
+    let cameWithMinutes = justTime.includes(":");
+    let hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
 
     // Converting the hour to a 24 hour standard
     hour = isPostMeridiem && hour !== 12 ? hour + 12 : hour;
     hour = hour === 12 && !isPostMeridiem ? 0 : hour;
 
     // Adding the minutes to the hour
-    var finalTime = (cameWithMinutes ? ("" + hour) + ":" + justTime.split(":")[1] :
+    let finalTime = (cameWithMinutes ? ("" + hour) + ":" + justTime.split(":")[1] :
         ("" + hour) + ":00");
 
     // Padding to 2 digits in the hour
@@ -45,7 +45,7 @@ function standardizeToInternationalTime(receivedFormatTimeString) {
 }
 
 function getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime) {
-    var minutesDiff = ((endDateTime - startDateTime) / 60000)
+    let minutesDiff = ((endDateTime - startDateTime) / 60000)
     minutesDiff = Math.floor(minutesDiff)
 
     return minutesDiff / 60
@@ -53,7 +53,8 @@ function getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime) {
 
 
 function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
-    return "" + parseInt(hoursInDecimalFormat) + ":" + ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
+    return "" + parseInt(hoursInDecimalFormat) + ":" +
+        ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
 function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime = false) {
@@ -64,46 +65,47 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime =
     } else if ((hoursThreshold - hoursSum) == 0) {
         alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + "!")
     } else {
-        var timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
+        let timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
 
-        var dateTime = new Date()
+        let dateTime = new Date()
 
         dateTime.setHours(dateTime.getHours() + parseInt(timeDiffString.split(":")[0]))
         dateTime.setMinutes(dateTime.getMinutes() + parseInt(timeDiffString.split(":")[1]))
 
-        var hours = dateTime.getHours()
+        let hours = dateTime.getHours()
         alert("[" + label + "]\n\n" + timeDiffString + " hours missing" +
             (displayFinishingTime ?
-                "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" + ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : ""))
+                "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
+                ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : ""))
 
     }
-
 }
 
 // Listening to keypress events in the entire document
 $("html").keydown(function (event) {
 
     // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
-    if (event.altKey === true && (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO" || event.code === "KeyM")) {
+    if (event.altKey === true &&
+        (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO" || event.code === "KeyM")) {
 
         // getting date of first day in view
-        var firstDayInWeek = $(firstDayElement).first().text()
+        const firstDayInWeek = $(firstDayElement).first().text()
         // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
-        var yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[1]
-        if (isNaN(yearOfFirstDayInWeek) == true) {
+        let yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[1]
+        if (isNaN(yearOfFirstDayInWeek)) {
             yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[3]
         }
-        var monthOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[0]
-        var dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
+        const monthOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[0]
+        const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
 
         event.preventDefault()
         event.stopPropagation()
 
         // Variable to hold query (entered or inferred)
-        var requiredDayText
-        var nowDateTime = new Date()
+        let requiredDayText
+        let nowDateTime = new Date()
 
-        var showFinishingTime = event.code === "KeyO"
+        const showFinishingTime = event.code === "KeyO"
 
         // Set the query for the current day
         if (event.code === "KeyI" || event.code === "KeyO") {
@@ -128,13 +130,13 @@ $("html").keydown(function (event) {
         requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
 
         // Initializing variable to add times
-        var calendarTimeAdder = 0
-        var passedHoursAdder = 0
+        let calendarTimeAdder = 0
+        let passedHoursAdder = 0
 
-        var events = []
+        let events = []
 
         $(calEventElement).each(function (index) {
-            var text = $(this).text()
+            let text = $(this).text()
 
             if (text === "") { return }
 
@@ -142,33 +144,33 @@ $("html").keydown(function (event) {
 
             events.push(text)
 
-            originalText = text
+            const originalText = text
             text = text.toLowerCase()
 
             // getting current record calendar day number
             let textDay = getSingleDayStartingDayNumber(text)
 
             // ignoring "cal.ignore"s and external-calendar-without-details busy times
-            if (textDay != null && ((textDay == requiredDayText || requiredDayText == "") && !text.includes("cal.ignore") && !text.includes(", busy, calendar: ") && !text.includes(", declined, ") && !text.includes(", tentative, "))) {
+            if (isTrackableEvent(textDay, requiredDayText, text)) {
 
                 console.log(++index + ") " + originalText)
 
-                var splittedText = text.split(" ")
+                const splittedText = text.split(" ")
 
-                var fromTime = splittedText[0]
+                let fromTime = splittedText[0]
                 // ignoring events with no time span
                 if (fromTime[fromTime.length - 1] == ',') {
                     console.log("Ignoring event with no time span.");
                     return;
                 }
-                var toTime = splittedText[2]
+                let toTime = splittedText[2]
 
-                var singleDateStart = splittedText.length - 3
-                var singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
+                let singleDateStart = splittedText.length - 3
+                let singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
                     splittedText[singleDateStart + 2];
 
-                var fromDate = singleDate
-                var toDate = singleDate
+                let fromDate = singleDate
+                let toDate = singleDate
 
                 // getting time and date for single day events that start and end in different days
                 if (/^[A-Za-z]{2,}$/.test(fromTime)) {
@@ -188,14 +190,14 @@ $("html").keydown(function (event) {
                 toTime = standardizeToInternationalTime(toTime)
 
                 // getting actual dates
-                var startDateTime = new Date(fromDate + " " + fromTime);
+                let startDateTime = new Date(fromDate + " " + fromTime);
                 // not including and event that starts before the beginning of the first day in the current view
                 if (startDateTime < dateOfFirstDayInView) {
                     return
                 }
-                var endDateTime = new Date(toDate + " " + toTime);
+                let endDateTime = new Date(toDate + " " + toTime);
 
-                var hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
+                let hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
                 console.log("Hours: " + hoursLength)
                 calendarTimeAdder += hoursLength
 
@@ -223,7 +225,9 @@ $("html").keydown(function (event) {
             alert("No active events found for filter [" + requiredDayText + "]")
             // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
         } else {
-            alert("[" + requiredDayText + "]\n\n" + convertDecimalHoursToTimeFormat(showFinishingTime ? passedHoursAdder : calendarTimeAdder) + " hours " + (showFinishingTime ? "worked" : "recorded"))
+            alert("[" + requiredDayText + "]\n\n" +
+                convertDecimalHoursToTimeFormat(showFinishingTime ? passedHoursAdder : calendarTimeAdder) +
+                " hours " + (showFinishingTime ? "worked" : "recorded"))
 
             if (requiredDayText == "Entire Week") {
                 // show hours diff for week query
@@ -276,12 +280,18 @@ function getSingleDayStartingDayNumber(text) {
     let toIndex = text.lastIndexOf(",")
     let fromIndex = text.substring(0, toIndex).lastIndexOf(" ") + 1
 
-    numberSpaceText = text.substring(fromIndex, toIndex)
+    let numberSpaceText = text.substring(fromIndex, toIndex)
 
-    if (isNaN(numberSpaceText) == false) {
+    if (!isNaN(numberSpaceText)) {
         return numberSpaceText
     } else {
         numberSpaceText = text.split(" ")[1].replace(",", "")
-        return isNaN(numberSpaceText) == false ? numberSpaceText : null
+        return (!isNaN(numberSpaceText)) ? numberSpaceText : null
     }
+}
+
+function isTrackableEvent(textDay, requiredDayText, text) {
+    return (textDay != null && ((textDay == requiredDayText || requiredDayText == "") &&
+        !text.includes("cal.ignore") && !text.includes(" c.ig") && !text.includes(", busy, calendar: ") &&
+        !text.includes(", declined, ") && !text.includes(", tentative, ")))
 }
