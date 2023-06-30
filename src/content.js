@@ -57,10 +57,10 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
         ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
-function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime = false) {
+function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, displayFinishingTime) {
 
     if ((hoursThreshold - hoursSum) < 0) {
-        alert("[" + label + "]\n\n" + (displayFinishingTime ? "You've worked " : "You have ") +
+        alert("[" + label + "]\n\n" + (isRealHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
     } else if ((hoursThreshold - hoursSum) == 0) {
         alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + "!")
@@ -84,9 +84,12 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, displayFinishingTime =
 // Listening to keypress events in the entire document
 $("html").keydown(function (event) {
 
-    // Running functionality con Ctrl + i or Ctrl + k (case insensitive)
+    // Running functionality with Ctrl + i or Ctrl + k (case insensitive)
     if (event.altKey === true &&
-        (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO" || event.code === "KeyM")) {
+        (event.code === "KeyI" || event.code === "KeyK")) {
+
+        // check if shift key was pressed
+        const isRealHoursReport = event.shiftKey ? false : true
 
         // getting date of first day in view
         const firstDayInWeek = $(firstDayElement).first().text()
@@ -105,10 +108,9 @@ $("html").keydown(function (event) {
         let requiredDayText
         let nowDateTime = new Date()
 
-        const showFinishingTime = event.code === "KeyO"
 
         // Set the query for the current day
-        if (event.code === "KeyI" || event.code === "KeyO") {
+        if (event.code === "KeyI") {
 
             // Google Calendar format
             requiredDayText = "" + nowDateTime.getDate()
@@ -202,7 +204,6 @@ $("html").keydown(function (event) {
                 calendarTimeAdder += hoursLength
 
                 // checking how many minutes or hours have actually passed
-                // (for now only used in current day finish estimation with KeyO)
                 if (startDateTime < nowDateTime) {
                     if (endDateTime < nowDateTime) {
                         passedHoursAdder += hoursLength
@@ -226,18 +227,18 @@ $("html").keydown(function (event) {
             // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
         } else {
             alert("[" + requiredDayText + "]\n\n" +
-                convertDecimalHoursToTimeFormat(showFinishingTime ? passedHoursAdder : calendarTimeAdder) +
-                " hours " + (showFinishingTime ? "worked" : "recorded"))
+                convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
+                " hours " + (isRealHoursReport ? "worked" : "recorded"))
 
             if (requiredDayText == "Entire Week") {
                 // show hours diff for week query
-                showHoursDiffTo(calendarTimeAdder, weeklyHoursMargin, requiredDayText)
+                showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText, isRealHoursReport, false)
             } else {
                 // Show hours diff for single day query
-                if (showFinishingTime) {
-                    showHoursDiffTo(passedHoursAdder, dailyHoursMargin, requiredDayText, true)
+                if (isRealHoursReport) {
+                    showHoursDiffTo(passedHoursAdder, dailyHoursMargin, requiredDayText, true, true)
                 } else {
-                    showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText)
+                    showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText, false, false)
                 }
             }
         }

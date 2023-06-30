@@ -4,15 +4,21 @@
 
 
 Just hit Alt + i\
-and the extension will let you know how many hours you've recorded\
-(how many hours you have in your google calendar for the current day)\
-and how you are in comparison with an 8-hours-a-day work schedule
-
-The Alt + o option shows the actual hours that are recorded and that have also already passed, allowing you to know by displaying for you how many hours are missing in practice, and around what time you will be done for the day.
+and the extension will let you know how many hours you've actually worked up to your current time.\
+(how many hours you have in your google calendar for the current day up to your current time)\
+and how you are in comparison with an 8-hours-a-day work schedule. It will also show your estimated time to finish.
 
 If you want to know a different day hit Alt + k\
 and enter the day you want to check according to the instructions in the prompt presented\
-or leave empty to calculate the entire visible week.
+or leave empty to calculate the entire visible week. This also computes time only up to your current time.
+
+To calculate on the entire range of time queried without considering your current time (let's say you want to count how many hours are "recorded" on a given future day or week, or possibly the current day or week but count events that have not yet started or passed), you can add the Shift key to the previous commands.
+
+To summarize:
+- `Alt + i` counts the current day events that have already started or passed.
+- but `Alt + Shift + i` counts all events in the current day, including those happening later.
+- `Alt + k` counts the visible week or wanted day events that have already started or passed.
+- but `Alt + Shift + k` counts all the events in the visible week or wanted day.
 
 
 This program works in Week view of the calendar\
@@ -20,7 +26,7 @@ This program works in Week view of the calendar\
 
 It also helps automating insertion of activity prefixes using the extension's popup window.
 
-![pref](https://i.imgur.com/bcUoMyc.png)
+![pref](popupimg.png)
 
 <p>Icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik" target="_blank">Freepik</a> from <a target="_blank" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a><br>https://www.flaticon.com/free-icon/calendar_833634</p>
 
