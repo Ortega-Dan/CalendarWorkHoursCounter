@@ -292,6 +292,6 @@ function getSingleDayStartingDayNumber(text) {
 
 function isTrackableEvent(textDay, requiredDayText, text) {
     return (textDay != null && ((textDay == requiredDayText || requiredDayText == "") &&
-        !text.includes("cal.ignore") && !text.includes(" c.ig") && !text.includes(", busy, calendar: ") &&
+        !text.match(/\bcal.ignore\b/) && !text.match(/\bc.ig\b/) && !text.includes(", busy, calendar: ") &&
         !text.includes(", declined, ") && !text.includes(", tentative, ")))
 }

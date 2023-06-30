@@ -1,17 +1,17 @@
 function standardizeToInternationalTime(timeInAmPmFormatString) {
 
-    var amOrPm = timeInAmPmFormatString.match("(am|pm)")[0];
-    var justTime = timeInAmPmFormatString.replace(amOrPm, "");
+    let amOrPm = timeInAmPmFormatString.match("(am|pm)")[0];
+    let justTime = timeInAmPmFormatString.replace(amOrPm, "");
 
-    var cameWithMinutes = justTime.includes(":");
-    var hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
+    let cameWithMinutes = justTime.includes(":");
+    let hour = parseInt(cameWithMinutes ? justTime.split(":")[0] : justTime);
 
-    var isPostMeridiem = amOrPm === "pm";
+    let isPostMeridiem = amOrPm === "pm";
 
     hour = isPostMeridiem && hour !== 12 ? hour + 12 : hour;
     hour = hour === 12 && !isPostMeridiem ? 0 : hour;
 
-    var finalTime = (cameWithMinutes ? ("" + hour) + ":" + justTime.split(":")[1] :
+    let finalTime = (cameWithMinutes ? ("" + hour) + ":" + justTime.split(":")[1] :
         ("" + hour) + ":00");
 
     finalTime = finalTime.padStart(5, "0");
@@ -20,7 +20,7 @@ function standardizeToInternationalTime(timeInAmPmFormatString) {
 }
 
 
-var test;
+let test;
 test = "8am";
 console.log("Test: " + test + ".  Result: " + standardizeToInternationalTime(test));
 test = "8pm";
