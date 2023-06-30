@@ -100,12 +100,11 @@ Here the contents of the launch.json to debug from chrome on vscode:
 ```
 ______________________________________________________
 
-## Interesting Info
-Based on an analysis of the year 2020. Which is a leap year.
+## Handy numbers about work time
+Based on a review of the year 2020. Which is a leap year.\
+The following **averages** result.
 
-We've got the following **averages** for general usage.
-
-In a Monday-Friday 8-hours-a-day schedule:\
-A working month is 4.366666 working weeks.\
-A working month is 21.833333 working days.\
-A working month is 174.666666 working hours.
+In a Monday-Friday 8-hours-a-day schedule, a **work month** has:\
+4.366666 weeks.\
+21.833333 work days.\
+174.666666 work hours.
