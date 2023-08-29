@@ -1,9 +1,10 @@
 console.log("popupjs loaded");
 
-// first and second prefix elements
+// prefix elements
 var FIRST
 var SECOND
 var THIRD
+var FOURTH
 
 // first prefix setter
 function storeFirst() {
@@ -26,6 +27,13 @@ function storeThird() {
     });
 }
 
+// fourth prefix setter
+function storeFourth() {
+    chrome.storage.sync.set({ "fourth": FOURTH.value }, function () {
+        console.log("setting fourth to value " + FOURTH.value);
+    });
+}
+
 
 window.onload = function () {
 
@@ -33,11 +41,13 @@ window.onload = function () {
     FIRST = document.getElementById("first")
     SECOND = document.getElementById("second")
     THIRD = document.getElementById("third")
+    FOURTH = document.getElementById("fourth")
 
     // defining onchange functions
     FIRST.onchange = storeFirst;
     SECOND.onchange = storeSecond;
     THIRD.onchange = storeThird;
+    FOURTH.onchange = storeFourth;
 
     // setting previously saved results
     chrome.storage.sync.get(["first"], function (result) {
@@ -48,5 +58,8 @@ window.onload = function () {
     });
     chrome.storage.sync.get(["third"], function (result) {
         THIRD.value = result["third"]
+    });
+    chrome.storage.sync.get(["fourth"], function (result) {
+        FOURTH.value = result["fourth"]
     });
 }
