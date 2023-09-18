@@ -152,7 +152,7 @@ $("html").keydown(function (event) {
             // getting current record calendar day number
             let textDay = getSingleDayStartingDayNumber(text)
 
-            // ignoring "cal.ignore"s and external-calendar-without-details busy times
+            // ignoring "cal.ignore"s and external-calendars
             if (isTrackableEvent(textDay, requiredDayText, text)) {
 
                 console.log(++index + ") " + originalText)
@@ -301,7 +301,8 @@ function getSingleDayStartingDayNumber(text) {
 }
 
 function isTrackableEvent(textDay, requiredDayText, text) {
+    // ", calendar: " is the identifier for external calendar events
     return (textDay != null && ((textDay == requiredDayText || requiredDayText == "") &&
-        !text.match(/\bcal.ignore\b/) && !text.match(/\bc.ig\b/) && !text.includes(", busy, calendar: ") &&
+        !text.match(/\bcal.ignore\b/) && !text.match(/\bc.ig\b/) && !text.includes(", calendar: ") &&
         !text.includes(", declined, ") && !text.includes(", tentative, ")))
 }
