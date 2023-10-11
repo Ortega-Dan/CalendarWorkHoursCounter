@@ -6,6 +6,7 @@
 const calEventElement = "div.ynRLnc"
 const firstDayElement = "div.KSxb4d"
 const monthsAndYearsOfViewElement = "div.rSoRzd"
+const CURRENT_HOUR_INDICATOR_CLASS = "h11RHc"
 
 // week and daily hours margins
 const weeklyHoursBase = 40
@@ -215,14 +216,16 @@ function hoursCountingFlow(event) {
 
     console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
 
+    // default partial week report for current week view
+    const isCurrentWeekView = (document.getElementsByClassName(CURRENT_HOUR_INDICATOR_CLASS).length > 0)
+    let isPartialWeekReport = isCurrentWeekView
 
     // check if modifier keys are pressed
     let isRealHoursReport = !event.shiftKey
-    let isPartialWeekReport = true
 
     if (requiredDayText == "") {
         requiredDayText = "Entire Week"
-        isPartialWeekReport = !event.ctrlKey && isRealHoursReport
+        isPartialWeekReport = isPartialWeekReport && !event.ctrlKey && isRealHoursReport
         if (isPartialWeekReport) {
             weeklyHoursMargin = getWantedHoursSoFar(currentDayNumber)
         }
