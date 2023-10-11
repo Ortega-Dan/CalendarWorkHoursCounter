@@ -218,13 +218,12 @@ function hoursCountingFlow(event) {
 
     // check if modifier keys are pressed
     let isRealHoursReport = !event.shiftKey
-    let isPartialWeekReport = false
+    let isPartialWeekReport = true
 
     if (requiredDayText == "") {
         requiredDayText = "Entire Week"
-        isPartialWeekReport = event.ctrlKey
+        isPartialWeekReport = !event.ctrlKey && isRealHoursReport
         if (isPartialWeekReport) {
-            isRealHoursReport = true
             weeklyHoursMargin = getWantedHoursSoFar(currentDayNumber)
         }
     }
