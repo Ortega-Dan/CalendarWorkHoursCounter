@@ -3,16 +3,14 @@
 //     'July', 'August', 'September', 'October', 'November', 'December']
 
 // Single calendar event element container... css description string
-const calEventElement = "div.ynRLnc"
-const firstDayElement = "div.KSxb4d"
-const monthsAndYearsOfViewElement = "div.rSoRzd"
-const CURRENT_HOUR_INDICATOR_CLASS = "h11RHc"
+const CAL_EVENT_ELEMENT = "div.ynRLnc"
+const FIRST_DAY_ELEMENT = "div.KSxb4d"
+const MONTHS_AND_YEARS_OF_VIEW_ELEMENT = "div.rSoRzd"
+const CURRENT_TIME_INDICATOR_CLASS = "h11RHc"
 
 // week and daily hours margins
-const weeklyHoursBase = 40
-const dailyHoursMargin = 8
-
-let weeklyHoursMargin = weeklyHoursBase
+const WEEKLY_HOURS_BASE = 40
+const DAILY_HOURS_MARGIN = 8
 
 /** Function used with enterprise calendar to convert from Meridian time to Military time */
 function standardizeToInternationalTime(receivedFormatTimeString) {
@@ -85,16 +83,16 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
 }
 
 function hoursCountingFlow(event) {
-    weeklyHoursMargin = weeklyHoursBase
+    let weeklyHoursMargin = WEEKLY_HOURS_BASE
 
     // getting date of first day in view
-    const firstDayInWeek = $(firstDayElement).first().text()
+    const firstDayInWeek = $(FIRST_DAY_ELEMENT).first().text()
     // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
-    let yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[1]
+    let yearOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[1]
     if (isNaN(yearOfFirstDayInWeek)) {
-        yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[3]
+        yearOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[3]
     }
-    const monthOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[0]
+    const monthOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[0]
     const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
 
     event.preventDefault()
@@ -136,7 +134,7 @@ function hoursCountingFlow(event) {
 
     let events = []
 
-    $(calEventElement).each(function (index) {
+    $(CAL_EVENT_ELEMENT).each(function (index) {
         let text = $(this).text()
 
         if (text === "") { return }
@@ -217,7 +215,7 @@ function hoursCountingFlow(event) {
     console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
 
     // default partial week report for current week view
-    const isCurrentWeekView = (document.getElementsByClassName(CURRENT_HOUR_INDICATOR_CLASS).length > 0)
+    const isCurrentWeekView = (document.getElementsByClassName(CURRENT_TIME_INDICATOR_CLASS).length > 0)
     let isPartialWeekReport = isCurrentWeekView
 
     // check if modifier keys are pressed
@@ -247,9 +245,9 @@ function hoursCountingFlow(event) {
         } else {
             // Show hours diff for single day query
             if (isRealHoursReport) {
-                showHoursDiffTo(passedHoursAdder, dailyHoursMargin, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
+                showHoursDiffTo(passedHoursAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
             } else {
-                showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText, isRealHoursReport, false)
+                showHoursDiffTo(calendarTimeAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, false)
             }
         }
     }
@@ -258,7 +256,7 @@ function hoursCountingFlow(event) {
 }
 
 function getWantedHoursSoFar(currentDayNumber) {
-    return currentDayNumber > 4 ? weeklyHoursMargin : dailyHoursMargin * currentDayNumber
+    return currentDayNumber > 4 ? WEEKLY_HOURS_BASE : DAILY_HOURS_MARGIN * currentDayNumber
 }
 
 function prefixInsertionFlow(event) {
