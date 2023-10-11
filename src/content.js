@@ -8,8 +8,10 @@ const firstDayElement = "div.KSxb4d"
 const monthsAndYearsOfViewElement = "div.rSoRzd"
 
 // week and daily hours margins
-const weeklyHoursMargin = 40
+const weeklyHoursBase = 40
 const dailyHoursMargin = 8
+
+let weeklyHoursMargin = weeklyHoursBase
 
 /** Function used with enterprise calendar to convert from Meridian time to Military time */
 function standardizeToInternationalTime(receivedFormatTimeString) {
@@ -81,172 +83,183 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
     }
 }
 
-// Listening to keypress events in the entire document
-$("html").keydown(function (event) {
+function hoursCountingFlow(event) {
+    weeklyHoursMargin = weeklyHoursBase
 
-    // Running functionality with Ctrl + i or Ctrl + k (case insensitive)
-    if (event.altKey === true &&
-        (event.code === "KeyI" || event.code === "KeyK")) {
+    // getting date of first day in view
+    const firstDayInWeek = $(firstDayElement).first().text()
+    // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
+    let yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[1]
+    if (isNaN(yearOfFirstDayInWeek)) {
+        yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[3]
+    }
+    const monthOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[0]
+    const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
 
-        // check if shift key was pressed
-        const isRealHoursReport = event.shiftKey ? false : true
+    event.preventDefault()
+    event.stopPropagation()
 
-        // getting date of first day in view
-        const firstDayInWeek = $(firstDayElement).first().text()
-        // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
-        let yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[1]
-        if (isNaN(yearOfFirstDayInWeek)) {
-            yearOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[3]
-        }
-        const monthOfFirstDayInWeek = $(monthsAndYearsOfViewElement).first().text().split(" ")[0]
-        const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
-
-        event.preventDefault()
-        event.stopPropagation()
-
-        // Variable to hold query (entered or inferred)
-        let requiredDayText
-        let nowDateTime = new Date()
+    // Variable to hold query (entered or inferred)
+    let requiredDayText
+    let nowDateTime = new Date()
+    let currentDayNumber = nowDateTime.getDay()
 
 
-        // Set the query for the current day
-        if (event.code === "KeyI") {
+    // Set the query for the current day
+    let isCurrentDayReport = false
+    if (event.code === "KeyI") {
 
-            // Google Calendar format
-            requiredDayText = "" + nowDateTime.getDate()
-            // requiredDayText = months[nowDateTime.getMonth()] + " " + nowDateTime.getDate() +
-            //     ", " + nowDateTime.getFullYear()
-        }
-
-        // Prompting for the query when user requested
-        if (event.code === "KeyK") {
-            // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
-            requiredDayText = prompt("What Day Number do you want to check ?\n[From the week on screen]\n\n" +
-                "Or leave empty to check the entire week.").trim()
-        }
-
-        // Logging the query (entered or inferred)
-        console.log("Checking " + (requiredDayText == "" ? "the week displayed" : requiredDayText) + ".")
-
-        // Converting the query to lower case for later case insensitive matching
-        requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
-
-        // Initializing variable to add times
-        let calendarTimeAdder = 0
-        let passedHoursAdder = 0
-
-        let events = []
-
-        $(calEventElement).each(function (index) {
-            let text = $(this).text()
-
-            if (text === "") { return }
-
-            if (events.includes(text)) { return }
-
-            events.push(text)
-
-            const originalText = text
-            text = text.toLowerCase()
-
-            // getting current record calendar day number
-            let textDay = getSingleDayStartingDayNumber(text)
-
-            // ignoring "cal.ignore"s and external-calendars
-            if (isTrackableEvent(textDay, requiredDayText, text)) {
-
-                console.log(++index + ") " + originalText)
-
-                const splittedText = text.split(" ")
-
-                let fromTime = splittedText[0]
-                // ignoring events with no time span
-                if (fromTime[fromTime.length - 1] == ',') {
-                    console.log("Ignoring event with no time span.");
-                    return;
-                }
-                let toTime = splittedText[2]
-
-                let singleDateStart = splittedText.length - 3
-                let singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
-                    splittedText[singleDateStart + 2];
-
-                let fromDate = singleDate
-                let toDate = singleDate
-
-                // getting time and date for single day events that start and end in different days
-                if (/^[A-Za-z]{2,}$/.test(fromTime)) {
-                    fromTime = splittedText[4]
-                    toTime = splittedText[10]
-
-                    fromDate = splittedText[0] + " " + splittedText[1] + " " +
-                        splittedText[2];
-                    toDate = splittedText[6] + " " + splittedText[7] + " " +
-                        splittedText[8];
-                }
-
-                toTime = toTime.substring(0, toTime.length - 1)
-
-                // converting to international time format
-                fromTime = standardizeToInternationalTime(fromTime)
-                toTime = standardizeToInternationalTime(toTime)
-
-                // getting actual dates
-                let startDateTime = new Date(fromDate + " " + fromTime);
-                // not including and event that starts before the beginning of the first day in the current view
-                if (startDateTime < dateOfFirstDayInView) {
-                    return
-                }
-                let endDateTime = new Date(toDate + " " + toTime);
-
-                let hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
-                console.log("Hours: " + hoursLength)
-                calendarTimeAdder += hoursLength
-
-                // checking how many minutes or hours have actually passed
-                if (startDateTime < nowDateTime) {
-                    if (endDateTime < nowDateTime) {
-                        passedHoursAdder += hoursLength
-                    } else {
-                        passedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
-                    }
-                }
-
-            }
-        })
-
-        console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
-
-        if (requiredDayText == "") {
-            requiredDayText = "Entire Week"
-        }
-
-        // Showing results
-        if (calendarTimeAdder === 0) {
-            alert("No active events found for filter [" + requiredDayText + "]")
-            // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
-        } else {
-            alert("[" + requiredDayText + "]\n\n" +
-                convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
-                " hours " + (isRealHoursReport ? "worked" : "recorded"))
-
-            if (requiredDayText == "Entire Week") {
-                // show hours diff for week query
-                showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText, isRealHoursReport, false)
-            } else {
-                // Show hours diff for single day query
-                if (isRealHoursReport) {
-                    showHoursDiffTo(passedHoursAdder, dailyHoursMargin, requiredDayText, true, true)
-                } else {
-                    showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText, false, false)
-                }
-            }
-        }
-
-        console.log("Done ******\n\n\n")
-
+        // Google Calendar format
+        requiredDayText = "" + nowDateTime.getDate()
+        isCurrentDayReport = true
+        // requiredDayText = months[nowDateTime.getMonth()] + " " + nowDateTime.getDate() +
+        //     ", " + nowDateTime.getFullYear()
     }
 
+    // Prompting for the query when user requested
+    if (event.code === "KeyK") {
+        // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
+        requiredDayText = prompt("What Day Number do you want to check ?\n[From the week on screen]\n\n" +
+            "Or leave empty to check the entire week.").trim()
+    }
+
+    // Logging the query (entered or inferred)
+    console.log("Checking " + (requiredDayText == "" ? "the week displayed" : requiredDayText) + ".")
+
+    // Converting the query to lower case for later case insensitive matching
+    requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
+
+    // Initializing variable to add times
+    let calendarTimeAdder = 0
+    let passedHoursAdder = 0
+
+    let events = []
+
+    $(calEventElement).each(function (index) {
+        let text = $(this).text()
+
+        if (text === "") { return }
+
+        if (events.includes(text)) { return }
+
+        events.push(text)
+
+        const originalText = text
+        text = text.toLowerCase()
+
+        // getting current record calendar day number
+        let textDay = getSingleDayStartingDayNumber(text)
+
+        // ignoring "cal.ignore"s and external-calendars
+        if (isTrackableEvent(textDay, requiredDayText, text)) {
+
+            console.log(++index + ") " + originalText)
+
+            const splittedText = text.split(" ")
+
+            let fromTime = splittedText[0]
+            // ignoring events with no time span
+            if (fromTime[fromTime.length - 1] == ',') {
+                console.log("Ignoring event with no time span.");
+                return;
+            }
+            let toTime = splittedText[2]
+
+            let singleDateStart = splittedText.length - 3
+            let singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
+                splittedText[singleDateStart + 2];
+
+            let fromDate = singleDate
+            let toDate = singleDate
+
+            // getting time and date for single day events that start and end in different days
+            if (/^[A-Za-z]{2,}$/.test(fromTime)) {
+                fromTime = splittedText[4]
+                toTime = splittedText[10]
+
+                fromDate = splittedText[0] + " " + splittedText[1] + " " +
+                    splittedText[2];
+                toDate = splittedText[6] + " " + splittedText[7] + " " +
+                    splittedText[8];
+            }
+
+            toTime = toTime.substring(0, toTime.length - 1)
+
+            // converting to international time format
+            fromTime = standardizeToInternationalTime(fromTime)
+            toTime = standardizeToInternationalTime(toTime)
+
+            // getting actual dates
+            let startDateTime = new Date(fromDate + " " + fromTime);
+            // not including and event that starts before the beginning of the first day in the current view
+            if (startDateTime < dateOfFirstDayInView) {
+                return
+            }
+            let endDateTime = new Date(toDate + " " + toTime);
+
+            let hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
+            console.log("Hours: " + hoursLength)
+            calendarTimeAdder += hoursLength
+
+            // checking how many minutes or hours have actually passed
+            if (startDateTime < nowDateTime) {
+                if (endDateTime < nowDateTime) {
+                    passedHoursAdder += hoursLength
+                } else {
+                    passedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
+                }
+            }
+
+        }
+    })
+
+    console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
+
+
+    // check if modifier keys are pressed
+    let isRealHoursReport = !event.shiftKey
+    let isPartialWeekReport = false
+
+    if (requiredDayText == "") {
+        requiredDayText = "Entire Week"
+        isPartialWeekReport = event.ctrlKey
+        if (isPartialWeekReport) {
+            isRealHoursReport = true
+            weeklyHoursMargin = getWantedHoursSoFar(currentDayNumber)
+        }
+    }
+
+    // Showing results
+    if (calendarTimeAdder === 0) {
+        alert("No active events found for filter [" + requiredDayText + "]")
+        // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
+    } else {
+        alert("[" + requiredDayText + (isPartialWeekReport ? " So Far" : "") + "]\n\n" +
+            convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
+            " hours " + (isRealHoursReport ? "worked" : "recorded"))
+
+        if (requiredDayText == "Entire Week") {
+            // show hours diff for week query
+            showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText + (isPartialWeekReport ? " So Far" : "")
+                , isRealHoursReport, isPartialWeekReport)
+        } else {
+            // Show hours diff for single day query
+            if (isRealHoursReport) {
+                showHoursDiffTo(passedHoursAdder, dailyHoursMargin, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
+            } else {
+                showHoursDiffTo(calendarTimeAdder, dailyHoursMargin, requiredDayText, isRealHoursReport, false)
+            }
+        }
+    }
+
+    console.log("Done ******\n\n\n")
+}
+
+function getWantedHoursSoFar(currentDayNumber) {
+    return currentDayNumber > 4 ? weeklyHoursMargin : dailyHoursMargin * currentDayNumber
+}
+
+function prefixInsertionFlow(event) {
     // insert first prefix
     if (event.altKey === true && event.code === "KeyH") {
         chrome.storage.sync.get(["first"], function (result) {
@@ -259,7 +272,7 @@ $("html").keydown(function (event) {
     // insert second prefix
     if (event.altKey === true && event.code === "KeyJ") {
         chrome.storage.sync.get(["second"], function (result) {
-            // console.log('first value is ' + result["first"]);
+            // console.log('second value is ' + result["second"]);
             document.activeElement.nextSibling.textContent = ""
             document.activeElement.value = result["second"]
         });
@@ -268,7 +281,7 @@ $("html").keydown(function (event) {
     // insert third prefix
     if (event.altKey === true && event.code === "KeyL") {
         chrome.storage.sync.get(["third"], function (result) {
-            // console.log('second value is ' + result["second"]);
+            // console.log('third value is ' + result["third"]);
             document.activeElement.nextSibling.textContent = ""
             document.activeElement.value = result["third"]
         });
@@ -277,13 +290,12 @@ $("html").keydown(function (event) {
     // insert fourth prefix
     if (event.altKey === true && event.code === "KeyN") {
         chrome.storage.sync.get(["fourth"], function (result) {
-            // console.log('first value is ' + result["first"]);
+            // console.log('fourth value is ' + result["fourth"]);
             document.activeElement.nextSibling.textContent = ""
             document.activeElement.value = result["fourth"]
         });
     }
-
-})
+}
 
 // returns null if record doesn't meet the standard format for single day records
 function getSingleDayStartingDayNumber(text) {
@@ -306,3 +318,16 @@ function isTrackableEvent(textDay, requiredDayText, text) {
         !text.match(/\bcal.ignore\b/) && !text.match(/\bc.ig\b/) && !text.includes(", calendar: ") &&
         !text.includes(", declined, ") && !text.includes(", tentative, ")))
 }
+
+// Listening to keypress events in the entire document
+$("html").keydown(function (event) {
+    if (event.altKey === false) { return }
+
+    // Running functionality with Ctrl + i or Ctrl + k (case insensitive)
+    if (event.altKey === true &&
+        (event.code === "KeyI" || event.code === "KeyK")) {
+        hoursCountingFlow(event)
+    } else {
+        prefixInsertionFlow(event)
+    }
+})
