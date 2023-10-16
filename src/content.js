@@ -64,7 +64,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
         alert("[" + label + "]\n\n" + (isRealHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
     } else if ((hoursThreshold - hoursSum) == 0) {
-        alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + "!")
+        alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + (label.toLowerCase().includes("so far") ? " so far" : "") + "!")
     } else {
         let timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
 
@@ -230,25 +230,26 @@ function hoursCountingFlow(event) {
     }
 
     // Showing results
-    if (calendarTimeAdder === 0) {
-        alert("No active events found for filter [" + requiredDayText + "]")
-        // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
-    } else {
-        alert("[" + requiredDayText + (isPartialWeekReport ? " So Far" : "") + "]\n\n" +
-            convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
-            " hours " + (isRealHoursReport ? "worked" : "recorded"))
+    // if (calendarTimeAdder === 0) {
+    //     alert("No active events found for filter [" + requiredDayText + "]")
+    //     // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
+    // }
 
-        if (requiredDayText == "Entire Week") {
-            // show hours diff for week query
-            showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText + (isPartialWeekReport ? " So Far" : "")
-                , isRealHoursReport, isPartialWeekReport)
+    // Showing results
+    alert("[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
+        convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
+        " hours " + (isRealHoursReport ? "worked" : "recorded"))
+
+    if (requiredDayText == "Entire Week") {
+        // show hours diff for week query
+        showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText + (isPartialWeekReport ? " So Far" : "")
+            , isRealHoursReport, isPartialWeekReport)
+    } else {
+        // Show hours diff for single day query
+        if (isRealHoursReport) {
+            showHoursDiffTo(passedHoursAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
         } else {
-            // Show hours diff for single day query
-            if (isRealHoursReport) {
-                showHoursDiffTo(passedHoursAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
-            } else {
-                showHoursDiffTo(calendarTimeAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, false)
-            }
+            showHoursDiffTo(calendarTimeAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, false)
         }
     }
 
