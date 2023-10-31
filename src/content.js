@@ -12,6 +12,16 @@ const CURRENT_TIME_INDICATOR_CLASS = "h11RHc"
 const WEEKLY_HOURS_BASE = 40
 const DAILY_HOURS_MARGIN = 8
 
+const ACTION_KEY_TO_ENTRY = {
+    "KeyJ": "first",
+    "KeyL": "second",
+    "KeyU": "third",
+    "KeyH": "fourth",
+    "KeyN": "fifth",
+    "KeyM": "sixth",
+};
+const ACTION_KEYS_LIST = Object.keys(ACTION_KEY_TO_ENTRY);
+
 /** Function used with enterprise calendar to convert from Meridian time to Military time */
 function standardizeToInternationalTime(receivedFormatTimeString) {
 
@@ -261,40 +271,15 @@ function getWantedHoursSoFar(currentDayNumber) {
 }
 
 function prefixInsertionFlow(event) {
-    // insert first prefix
-    if (event.altKey === true && event.code === "KeyH") {
-        chrome.storage.sync.get(["first"], function (result) {
-            // console.log('first value is ' + result["first"]);
-            document.activeElement.nextSibling.textContent = ""
-            document.activeElement.value = result["first"]
-        });
-    }
+    if (event.altKey === true && ACTION_KEYS_LIST.includes(event.code)) {
 
-    // insert second prefix
-    if (event.altKey === true && event.code === "KeyJ") {
-        chrome.storage.sync.get(["second"], function (result) {
-            // console.log('second value is ' + result["second"]);
-            document.activeElement.nextSibling.textContent = ""
-            document.activeElement.value = result["second"]
-        });
-    }
+        const entry = ACTION_KEY_TO_ENTRY[event.code]
 
-    // insert third prefix
-    if (event.altKey === true && event.code === "KeyL") {
-        chrome.storage.sync.get(["third"], function (result) {
-            // console.log('third value is ' + result["third"]);
+        chrome.storage.sync.get([entry], function (result) {
             document.activeElement.nextSibling.textContent = ""
-            document.activeElement.value = result["third"]
+            document.activeElement.value = result[entry]
         });
-    }
 
-    // insert fourth prefix
-    if (event.altKey === true && event.code === "KeyN") {
-        chrome.storage.sync.get(["fourth"], function (result) {
-            // console.log('fourth value is ' + result["fourth"]);
-            document.activeElement.nextSibling.textContent = ""
-            document.activeElement.value = result["fourth"]
-        });
     }
 }
 

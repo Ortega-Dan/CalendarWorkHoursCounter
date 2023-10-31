@@ -1,10 +1,13 @@
 console.log("popupjs loaded");
+// THIS DEFINITELY NEEDS TO BE IMPROVED/MODULARIZED
 
 // prefix elements
 var FIRST
 var SECOND
 var THIRD
 var FOURTH
+var FIFTH
+var SIXTH
 
 // first prefix setter
 function storeFirst() {
@@ -34,6 +37,20 @@ function storeFourth() {
     });
 }
 
+// fifth prefix setter
+function storeFifth() {
+    chrome.storage.sync.set({ "fifth": FIFTH.value }, function () {
+        console.log("setting fifth to value " + FIFTH.value);
+    });
+}
+
+// sixth prefix setter
+function storeSixth() {
+    chrome.storage.sync.set({ "sixth": SIXTH.value }, function () {
+        console.log("setting sixth to value " + SIXTH.value);
+    });
+}
+
 
 window.onload = function () {
 
@@ -42,12 +59,16 @@ window.onload = function () {
     SECOND = document.getElementById("second")
     THIRD = document.getElementById("third")
     FOURTH = document.getElementById("fourth")
+    FIFTH = document.getElementById("fifth")
+    SIXTH = document.getElementById("sixth")
 
     // defining onchange functions
     FIRST.onchange = storeFirst;
     SECOND.onchange = storeSecond;
     THIRD.onchange = storeThird;
     FOURTH.onchange = storeFourth;
+    FIFTH.onchange = storeFifth;
+    SIXTH.onchange = storeSixth;
 
     // setting previously saved results
     chrome.storage.sync.get(["first"], function (result) {
@@ -61,5 +82,11 @@ window.onload = function () {
     });
     chrome.storage.sync.get(["fourth"], function (result) {
         FOURTH.value = result["fourth"]
+    });
+    chrome.storage.sync.get(["fifth"], function (result) {
+        FIFTH.value = result["fifth"]
+    });
+    chrome.storage.sync.get(["sixth"], function (result) {
+        SIXTH.value = result["sixth"]
     });
 }

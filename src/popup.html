@@ -9,6 +9,14 @@
       font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
       font-size: 100%;
     }
+
+    div.activity {
+      display: inline-block;
+    }
+
+    div.activity>label {
+      margin-left: 50px;
+    }
   </style>
 </head>
 
@@ -38,30 +46,37 @@
   <p>
     To insert an activity prefix in an event title, set the following boxes and use the corresponding shortcut while
     editing:
-  <div style="display: inline-block">
-    <label for="second"
-           style="margin-left: 50px;">Alt + J</label><br>
-    <input id="second"
-           type="text">
-  </div>
-  <div style="display: inline-block">
-    <label for="third"
-           style="margin-left: 50px;">Alt + L</label><br>
-    <input id="third"
-           type="text">
-  </div>
-  <div style="display: inline-block">
-    <label for="first"
-           style="margin-left: 50px;">Alt + H</label><br>
+  <div class="activity">
+    <label for="first">Alt + J</label><br>
     <input id="first"
            type="text">
   </div>
-  <div style="display: inline-block">
-    <label for="fourth"
-           style="margin-left: 50px;">Alt + N</label><br>
+  <div class="activity">
+    <label for="second">Alt + L</label><br>
+    <input id="second"
+           type="text">
+  </div>
+  <div class="activity">
+    <label for="third">Alt + U</label><br>
+    <input id="third"
+           type="text">
+  </div>
+  <div class="activity">
+    <label for="fourth">Alt + H</label><br>
     <input id="fourth"
            type="text">
   </div>
+  <div class="activity">
+    <label for="fifth">Alt + N</label><br>
+    <input id="fifth"
+           type="text">
+  </div>
+  <div class="activity">
+    <label for="sixth">Alt + M</label><br>
+    <input id="sixth"
+           type="text">
+  </div>
+
   </p>
   <i>
     To generate hours reports, out of the exported iCalendar (ics file) from Google Calendar settings, it is
