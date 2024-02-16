@@ -9,7 +9,7 @@ const MONTHS_AND_YEARS_OF_VIEW_ELEMENT = "div.rSoRzd"
 const CURRENT_TIME_INDICATOR_CLASS = "h11RHc"
 
 // week and daily hours margins
-const WEEKLY_HOURS_BASE = 40
+const WEEKLY_HOURS_BASE = 40.25
 const DAILY_HOURS_MARGIN = 8
 
 const ACTION_KEY_TO_ENTRY = {
@@ -74,7 +74,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
         alert("[" + label + "]\n\n" + (isRealHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
     } else if ((hoursThreshold - hoursSum) == 0) {
-        alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + (label.toLowerCase().includes("so far") ? " so far" : "") + "!")
+        alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + ((label.toLowerCase().includes("so far") && !label.toLowerCase().includes("week")) ? " so far" : "") + "!")
     } else {
         let timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
 
