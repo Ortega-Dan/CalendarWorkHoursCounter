@@ -1,14 +1,25 @@
-// Setting a month conversion helper array
-// const months = ['January', 'February', 'March', 'April', 'May', 'June',
-//     'July', 'August', 'September', 'October', 'November', 'December']
+// HTML needed constants:
+const DATA_HOLDING_CAL_EVENT_ELEMENT = "div.ynRLnc"
+// Has each event's time, date, and text. It can be in two formats:
+// - January 4, 2024 at 10pm to January 5, 2024 at 1:15am, The event text, Time Tracking, No location, 
+// - 7pm to 10:15pm, The event text, Time Tracking, No location, January 4, 2024
+// Used to calculate time spent in events. Both formats are supported.
 
-// Single calendar event element container... css description string
-const CAL_EVENT_ELEMENT = "div.ynRLnc"
 const FIRST_DAY_ELEMENT = "div.KSxb4d"
-const MONTHS_AND_YEARS_OF_VIEW_ELEMENT = "div.rSoRzd"
-const CURRENT_TIME_INDICATOR_CLASS = "h11RHc"
+// Contains just the number for the calendar day of the very first day in the view (usually Sunday).
+// Used to avoid calendar events that started before the current view week.
 
-// week and daily hours margins
+const MONTHS_AND_YEARS_OF_VIEW_ELEMENT = "div.UyW9db"
+// Contains the month and year of the week view.
+// Could be one of the following 3 formats: "February 2024" or "Jan – Feb 2024" or "Dec 2023 – Jan 2024"
+// Also used to avoid calendar events that started before the current view week.
+
+const CURRENT_TIME_INDICATOR_CLASS = "LvQ60d"
+// and indicator of the current time that only shows when looking at the present day, either in day or custom days, or week view.
+// It is used to know we are looking at the present and determine if we want to calculate so-far reports.
+
+
+// Week and daily hours margins to compare against
 const WEEKLY_HOURS_BASE = 40.25
 const DAILY_HOURS_MARGIN = 8
 
@@ -105,13 +116,15 @@ function hoursCountingFlow(event) {
     const monthOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[0]
     const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
 
+    console.log("First day in week view: '" + dateOfFirstDayInView + "'")
+
     event.preventDefault()
     event.stopPropagation()
 
     // Variable to hold query (entered or inferred)
     let requiredDayText
-    let nowDateTime = new Date()
-    let currentDayNumber = nowDateTime.getDay()
+    const nowDateTime = new Date()
+    const currentDayNumber = nowDateTime.getDay()
 
 
     // Set the query for the current day
@@ -144,7 +157,7 @@ function hoursCountingFlow(event) {
 
     let events = []
 
-    $(CAL_EVENT_ELEMENT).each(function (index) {
+    $(DATA_HOLDING_CAL_EVENT_ELEMENT).each(function (index) {
         let text = $(this).text()
 
         if (text === "") { return }
