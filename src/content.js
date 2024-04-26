@@ -1,20 +1,22 @@
 // HTML needed constants:
-const DATA_HOLDING_CAL_EVENT_ELEMENT = "div.ynRLnc"
-// Has each event's time, date, and text. It can be in two formats:
+const DATA_HOLDING_CAL_EVENT_ELEMENT = "div.XuJrye"
+// Has each event's time, date, and text. 
+// It is usually a div on top of the element tree that has the event text only.
+// It can be in two formats:
 // - January 4, 2024 at 10pm to January 5, 2024 at 1:15am, The event text, Time Tracking, No location, 
 // - 7pm to 10:15pm, The event text, Time Tracking, No location, January 4, 2024
 // Used to calculate time spent in events. Both formats are supported.
 
-const FIRST_DAY_ELEMENT = "div.KSxb4d"
+const FIRST_DAY_ELEMENT = "div.nSCxEf"
 // Contains just the number for the calendar day of the very first day in the view (usually Sunday).
-// Used to avoid calendar events that started before the current view week.
+// Used to avoid calendar events that started before the current week view.
 
 const MONTHS_AND_YEARS_OF_VIEW_ELEMENT = "div.UyW9db"
 // Contains the month and year of the week view.
 // Could be one of the following 3 formats: "February 2024" or "Jan – Feb 2024" or "Dec 2023 – Jan 2024"
-// Also used to avoid calendar events that started before the current view week.
+// Also used to avoid calendar events that started before the current week view.
 
-const CURRENT_TIME_INDICATOR_CLASS = "LvQ60d"
+const CURRENT_TIME_INDICATOR_ELEMENT = "div.LvQ60d"
 // and indicator of the current time that only shows when looking at the present day, either in day or custom days, or week view.
 // It is used to know we are looking at the present and determine if we want to calculate so-far reports.
 
@@ -238,7 +240,7 @@ function hoursCountingFlow(event) {
     console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
 
     // default partial week report for current week view
-    const isCurrentWeekView = (document.getElementsByClassName(CURRENT_TIME_INDICATOR_CLASS).length > 0)
+    const isCurrentWeekView = (document.getElementsByClassName(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
     let isPartialWeekReport = isCurrentWeekView
 
     // check if modifier keys are pressed
