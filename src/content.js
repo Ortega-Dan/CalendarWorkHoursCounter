@@ -22,7 +22,7 @@ const CURRENT_TIME_INDICATOR_ELEMENT = "div.LvQ60d"
 
 
 // Week and daily hours margins to compare against
-const WEEKLY_HOURS_BASE = 40.25
+const WEEKLY_HOURS_BASE = 40
 const DAILY_HOURS_MARGIN = 8
 
 const ACTION_KEY_TO_ENTRY = {
@@ -240,7 +240,7 @@ function hoursCountingFlow(event) {
     console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
 
     // default partial week report for current week view
-    const isCurrentWeekView = (document.getElementsByClassName(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
+    const isCurrentWeekView = ($(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
     let isPartialWeekReport = isCurrentWeekView
 
     // check if modifier keys are pressed
