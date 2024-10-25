@@ -291,7 +291,6 @@ function prefixInsertionFlow(event) {
         const entry = ACTION_KEY_TO_ENTRY[event.code]
 
         chrome.storage.sync.get([entry], function (result) {
-            document.activeElement.nextSibling.textContent = ""
             document.activeElement.value = result[entry]
         });
 
