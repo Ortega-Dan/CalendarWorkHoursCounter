@@ -22,8 +22,8 @@ const CURRENT_TIME_INDICATOR_ELEMENT = "div.LvQ60d"
 
 
 // Week and daily hours margins to compare against
-const WEEKLY_HOURS_BASE = 40
-const DAILY_HOURS_MARGIN = 8
+const WEEKLY_HOURS_BASE = 45
+const DAILY_HOURS_MARGIN = 9
 
 const ACTION_KEY_TO_ENTRY = {
     "KeyJ": "first",
@@ -89,7 +89,8 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
     } else if ((hoursThreshold - hoursSum) == 0) {
         alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + ((label.toLowerCase().includes("so far") && !label.toLowerCase().includes("week")) ? " so far" : "") + "!")
     } else {
-        let timeDiffString = convertDecimalHoursToTimeFormat(hoursThreshold - hoursSum)
+        let hoursDiff = hoursThreshold - hoursSum
+        let timeDiffString = convertDecimalHoursToTimeFormat(hoursDiff)
 
         let dateTime = new Date()
 
@@ -97,7 +98,12 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
         dateTime.setMinutes(dateTime.getMinutes() + parseInt(timeDiffString.split(":")[1]))
 
         let hours = dateTime.getHours()
-        alert("[" + label + "]\n\n" + timeDiffString + " hours missing" +
+
+        let roundedMinsDiff = Math.round(hoursDiff * 60)
+        let pomosLeft = roundedMinsDiff / 54   // 45 + 9 = 54
+        let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
+
+        alert("[" + label + "]\n\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
             (displayFinishingTime ?
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
                 ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : ""))
