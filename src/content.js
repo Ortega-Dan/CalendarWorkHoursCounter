@@ -20,10 +20,13 @@ const CURRENT_TIME_INDICATOR_ELEMENT = "div.LvQ60d"
 // and indicator of the current time that only shows when looking at the present day, either in day or custom days, or week view.
 // It is used to know we are looking at the present and determine if we want to calculate so-far reports.
 
-
 // Week and daily hours margins to compare against
-const WEEKLY_HOURS_BASE = 45
-const DAILY_HOURS_MARGIN = 9
+let DAILY_HOURS_MARGIN
+let WEEKLY_HOURS_BASE
+
+// keys for chrome storage
+const DAILY_HOURS_KEY = "dayHours"
+const WEEKLY_HOURS_KEY = "weekHours"
 
 const ACTION_KEY_TO_ENTRY = {
     "KeyJ": "first",
@@ -112,179 +115,198 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
 }
 
 function hoursCountingFlow(event) {
-    let weeklyHoursMargin = WEEKLY_HOURS_BASE
 
-    // getting date of first day in view
-    const firstDayInWeek = $(FIRST_DAY_ELEMENT).first().text()
-    // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
-    let yearOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[1]
-    if (isNaN(yearOfFirstDayInWeek)) {
-        yearOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[3]
-    }
-    const monthOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[0]
-    const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
+    DAILY_HOURS_MARGIN = null
+    WEEKLY_HOURS_BASE = null
 
-    console.log("First day in week view: '" + dateOfFirstDayInView + "'")
-
-    event.preventDefault()
-    event.stopPropagation()
-
-    // Variable to hold query (entered or inferred)
-    let requiredDayText
-    const nowDateTime = new Date()
-    const currentDayNumber = nowDateTime.getDay()
+    // Setting base hours for the day and week
+    chrome.storage.sync.get([DAILY_HOURS_KEY, WEEKLY_HOURS_KEY], function (result) {
+        DAILY_HOURS_MARGIN = result[DAILY_HOURS_KEY]
+        WEEKLY_HOURS_BASE = result[WEEKLY_HOURS_KEY]
 
 
-    // Set the query for the current day
-    let isCurrentDayReport = false
-    if (event.code === "KeyI") {
+        if (DAILY_HOURS_MARGIN == null || WEEKLY_HOURS_BASE == null) {
+            alert("Please set the daily and weekly hours in the extension popup.")
+            return
+        }
 
-        // Google Calendar format
-        requiredDayText = "" + nowDateTime.getDate()
-        isCurrentDayReport = true
-        // requiredDayText = months[nowDateTime.getMonth()] + " " + nowDateTime.getDate() +
-        //     ", " + nowDateTime.getFullYear()
-    }
 
-    // Prompting for the query when user requested
-    if (event.code === "KeyK") {
-        // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
-        requiredDayText = prompt("What Day Number do you want to check ?\n[From the week on screen]\n\n" +
-            "Or leave empty to check the entire week.").trim()
-    }
+        // ---
+        let weeklyHoursMargin = WEEKLY_HOURS_BASE
 
-    // Logging the query (entered or inferred)
-    console.log("Checking " + (requiredDayText == "" ? "the week displayed" : requiredDayText) + ".")
+        // getting date of first day in view
+        const firstDayInWeek = $(FIRST_DAY_ELEMENT).first().text()
+        // var firstDayInWeek = $(firstDayElement).first().attr("aria-label")
+        let yearOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[1]
+        if (isNaN(yearOfFirstDayInWeek)) {
+            yearOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[3]
+        }
+        const monthOfFirstDayInWeek = $(MONTHS_AND_YEARS_OF_VIEW_ELEMENT).first().text().split(" ")[0]
+        const dateOfFirstDayInView = new Date(monthOfFirstDayInWeek + " " + firstDayInWeek + ", " + yearOfFirstDayInWeek + " 00:00")
 
-    // Converting the query to lower case for later case insensitive matching
-    requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
+        console.log("First day in week view: '" + dateOfFirstDayInView + "'")
 
-    // Initializing variable to add times
-    let calendarTimeAdder = 0
-    let passedHoursAdder = 0
+        event.preventDefault()
+        event.stopPropagation()
 
-    let events = []
+        // Variable to hold query (entered or inferred)
+        let requiredDayText
+        const nowDateTime = new Date()
+        const currentDayNumber = nowDateTime.getDay()
 
-    $(DATA_HOLDING_CAL_EVENT_ELEMENT).each(function (index) {
-        let text = $(this).text()
 
-        if (text === "") { return }
+        // Set the query for the current day
+        let isCurrentDayReport = false
+        if (event.code === "KeyI") {
 
-        if (events.includes(text)) { return }
+            // Google Calendar format
+            requiredDayText = "" + nowDateTime.getDate()
+            isCurrentDayReport = true
+            // requiredDayText = months[nowDateTime.getMonth()] + " " + nowDateTime.getDate() +
+            //     ", " + nowDateTime.getFullYear()
+        }
 
-        events.push(text)
+        // Prompting for the query when user requested
+        if (event.code === "KeyK") {
+            // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
+            requiredDayText = prompt("What Day Number do you want to check ?\n[From the week on screen]\n\n" +
+                "Or leave empty to check the entire week.").trim()
+        }
 
-        const originalText = text
-        text = text.toLowerCase()
+        // Logging the query (entered or inferred)
+        console.log("Checking " + (requiredDayText == "" ? "the week displayed" : requiredDayText) + ".")
 
-        // getting current record calendar day number
-        let textDay = getSingleDayStartingDayNumber(text)
+        // Converting the query to lower case for later case insensitive matching
+        requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
 
-        // ignoring "cal.ignore"s and external-calendars
-        if (isTrackableEvent(textDay, requiredDayText, text)) {
+        // Initializing variable to add times
+        let calendarTimeAdder = 0
+        let passedHoursAdder = 0
 
-            console.log(++index + ") " + originalText)
+        let events = []
 
-            const splittedText = text.split(" ")
+        $(DATA_HOLDING_CAL_EVENT_ELEMENT).each(function (index) {
+            let text = $(this).text()
 
-            let fromTime = splittedText[0]
-            // ignoring events with no time span
-            if (fromTime[fromTime.length - 1] == ',') {
-                console.log("Ignoring event with no time span.");
-                return;
-            }
-            let toTime = splittedText[2]
+            if (text === "") { return }
 
-            let singleDateStart = splittedText.length - 3
-            let singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
-                splittedText[singleDateStart + 2];
+            if (events.includes(text)) { return }
 
-            let fromDate = singleDate
-            let toDate = singleDate
+            events.push(text)
 
-            // getting time and date for single day events that start and end in different days
-            if (/^[A-Za-z]{2,}$/.test(fromTime)) {
-                fromTime = splittedText[4]
-                toTime = splittedText[10]
+            const originalText = text
+            text = text.toLowerCase()
 
-                fromDate = splittedText[0] + " " + splittedText[1] + " " +
-                    splittedText[2];
-                toDate = splittedText[6] + " " + splittedText[7] + " " +
-                    splittedText[8];
-            }
+            // getting current record calendar day number
+            let textDay = getSingleDayStartingDayNumber(text)
 
-            toTime = toTime.substring(0, toTime.length - 1)
+            // ignoring "cal.ignore"s and external-calendars
+            if (isTrackableEvent(textDay, requiredDayText, text)) {
 
-            // converting to international time format
-            fromTime = standardizeToInternationalTime(fromTime)
-            toTime = standardizeToInternationalTime(toTime)
+                console.log(++index + ") " + originalText)
 
-            // getting actual dates
-            let startDateTime = new Date(fromDate + " " + fromTime);
-            // not including and event that starts before the beginning of the first day in the current view
-            if (startDateTime < dateOfFirstDayInView) {
-                return
-            }
-            let endDateTime = new Date(toDate + " " + toTime);
+                const splittedText = text.split(" ")
 
-            let hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
-            console.log("Hours: " + hoursLength)
-            calendarTimeAdder += hoursLength
-
-            // checking how many minutes or hours have actually passed
-            if (startDateTime < nowDateTime) {
-                if (endDateTime < nowDateTime) {
-                    passedHoursAdder += hoursLength
-                } else {
-                    passedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
+                let fromTime = splittedText[0]
+                // ignoring events with no time span
+                if (fromTime[fromTime.length - 1] == ',') {
+                    console.log("Ignoring event with no time span.");
+                    return;
                 }
+                let toTime = splittedText[2]
+
+                let singleDateStart = splittedText.length - 3
+                let singleDate = splittedText[singleDateStart] + " " + splittedText[singleDateStart + 1] + " " +
+                    splittedText[singleDateStart + 2];
+
+                let fromDate = singleDate
+                let toDate = singleDate
+
+                // getting time and date for single day events that start and end in different days
+                if (/^[A-Za-z]{2,}$/.test(fromTime)) {
+                    fromTime = splittedText[4]
+                    toTime = splittedText[10]
+
+                    fromDate = splittedText[0] + " " + splittedText[1] + " " +
+                        splittedText[2];
+                    toDate = splittedText[6] + " " + splittedText[7] + " " +
+                        splittedText[8];
+                }
+
+                toTime = toTime.substring(0, toTime.length - 1)
+
+                // converting to international time format
+                fromTime = standardizeToInternationalTime(fromTime)
+                toTime = standardizeToInternationalTime(toTime)
+
+                // getting actual dates
+                let startDateTime = new Date(fromDate + " " + fromTime);
+                // not including and event that starts before the beginning of the first day in the current view
+                if (startDateTime < dateOfFirstDayInView) {
+                    return
+                }
+                let endDateTime = new Date(toDate + " " + toTime);
+
+                let hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
+                console.log("Hours: " + hoursLength)
+                calendarTimeAdder += hoursLength
+
+                // checking how many minutes or hours have actually passed
+                if (startDateTime < nowDateTime) {
+                    if (endDateTime < nowDateTime) {
+                        passedHoursAdder += hoursLength
+                    } else {
+                        passedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
+                    }
+                }
+
             }
+        })
 
+        console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
+
+        // default partial week report for current week view
+        const isCurrentWeekView = ($(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
+        let isPartialWeekReport = isCurrentWeekView
+
+        // check if modifier keys are pressed
+        let isRealHoursReport = !event.shiftKey
+
+        if (requiredDayText == "") {
+            requiredDayText = "Entire Week"
+            isPartialWeekReport = isPartialWeekReport && !event.ctrlKey && isRealHoursReport
+            if (isPartialWeekReport) {
+                weeklyHoursMargin = getWantedHoursSoFar(currentDayNumber)
+            }
         }
-    })
 
-    console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
+        // Showing results
+        // if (calendarTimeAdder === 0) {
+        //     alert("No active events found for filter [" + requiredDayText + "]")
+        //     // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
+        // }
 
-    // default partial week report for current week view
-    const isCurrentWeekView = ($(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
-    let isPartialWeekReport = isCurrentWeekView
+        // Showing results
+        alert("[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
+            convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
+            " hours " + (isRealHoursReport ? "worked" : "recorded"))
 
-    // check if modifier keys are pressed
-    let isRealHoursReport = !event.shiftKey
-
-    if (requiredDayText == "") {
-        requiredDayText = "Entire Week"
-        isPartialWeekReport = isPartialWeekReport && !event.ctrlKey && isRealHoursReport
-        if (isPartialWeekReport) {
-            weeklyHoursMargin = getWantedHoursSoFar(currentDayNumber)
-        }
-    }
-
-    // Showing results
-    // if (calendarTimeAdder === 0) {
-    //     alert("No active events found for filter [" + requiredDayText + "]")
-    //     // alert("No events owned, confirmed, or pending confirmation found for filter [" + requiredDayText + "]")
-    // }
-
-    // Showing results
-    alert("[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
-        convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
-        " hours " + (isRealHoursReport ? "worked" : "recorded"))
-
-    if (requiredDayText == "Entire Week") {
-        // show hours diff for week query
-        showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText + (isPartialWeekReport ? " So Far" : "")
-            , isRealHoursReport, isPartialWeekReport)
-    } else {
-        // Show hours diff for single day query
-        if (isRealHoursReport) {
-            showHoursDiffTo(passedHoursAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
+        if (requiredDayText == "Entire Week") {
+            // show hours diff for week query
+            showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText + (isPartialWeekReport ? " So Far" : "")
+                , isRealHoursReport, isPartialWeekReport)
         } else {
-            showHoursDiffTo(calendarTimeAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, false)
+            // Show hours diff for single day query
+            if (isRealHoursReport) {
+                showHoursDiffTo(passedHoursAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
+            } else {
+                showHoursDiffTo(calendarTimeAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, false)
+            }
         }
-    }
 
-    console.log("Done ******\n\n\n")
+        console.log("Done ******\n\n\n")
+
+    });
 }
 
 function getWantedHoursSoFar(currentDayNumber) {

@@ -9,6 +9,9 @@ var FOURTH
 var FIFTH
 var SIXTH
 
+var DAY_HOURS
+var WEEK_HOURS
+
 // first prefix setter
 function storeFirst() {
     chrome.storage.sync.set({ "first": FIRST.value }, function () {
@@ -51,6 +54,20 @@ function storeSixth() {
     });
 }
 
+// day hours value setter
+function storeDayHours() {
+    chrome.storage.sync.set({ "dayHours": DAY_HOURS.value }, function () {
+        console.log("setting dayHours to value " + DAY_HOURS.value);
+    });
+}
+
+// week hours value setter
+function storeWeekHours() {
+    chrome.storage.sync.set({ "weekHours": WEEK_HOURS.value }, function () {
+        console.log("setting weekHours to value " + WEEK_HOURS.value);
+    });
+}
+
 
 window.onload = function () {
 
@@ -62,6 +79,9 @@ window.onload = function () {
     FIFTH = document.getElementById("fifth")
     SIXTH = document.getElementById("sixth")
 
+    DAY_HOURS = document.getElementById("dayHours")
+    WEEK_HOURS = document.getElementById("weekHours")
+
     // defining onchange functions
     FIRST.onchange = storeFirst;
     SECOND.onchange = storeSecond;
@@ -69,6 +89,9 @@ window.onload = function () {
     FOURTH.onchange = storeFourth;
     FIFTH.onchange = storeFifth;
     SIXTH.onchange = storeSixth;
+    
+    DAY_HOURS.onchange = storeDayHours;
+    WEEK_HOURS.onchange = storeWeekHours;
 
     // setting previously saved results
     chrome.storage.sync.get(["first"], function (result) {
@@ -88,5 +111,13 @@ window.onload = function () {
     });
     chrome.storage.sync.get(["sixth"], function (result) {
         SIXTH.value = result["sixth"]
+    });
+
+
+    chrome.storage.sync.get(["dayHours"], function (result) {
+        DAY_HOURS.value = result["dayHours"]
+    });
+    chrome.storage.sync.get(["weekHours"], function (result) {
+        WEEK_HOURS.value = result["weekHours"]
     });
 }

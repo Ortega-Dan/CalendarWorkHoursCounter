@@ -36,11 +36,22 @@
   </p>
   <p style="color: darkblue;">It works in Week view of the calendar<br>
     (Switch to week view by hitting "w" key [Which is google-calendar's shortcut]).</p>
-
-  <p>It compares against 8 hours for current-day, and counts hours for the entire week for empty queries.</p>
+ 
   <p>To ignore events write cal.ignore (or c.ig) somewhere in the event title, separated from the rest of the text
     by some space or any other non-text character (any character distinct to numbers, letters, or underscore).
     <br><i>It also ignores automatically all declined and tentative-attendance ("maybe") events.</i>
+  </p>
+  <p>It compares against the desired daily hours for current-day, and counts hours for the entire week for empty queries, according to the following config:
+    <div class="activity">
+      <label for="dayHours">Day Hours</label><br>
+      <input id="dayHours"
+             type="number">
+    </div>
+    <div class="activity">
+      <label for="weekHours">Week Hours</label><br>
+      <input id="weekHours"
+             type="number">
+    </div>
   </p>
 
   <p>
