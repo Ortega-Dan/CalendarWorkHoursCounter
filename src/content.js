@@ -38,6 +38,10 @@ const ACTION_KEY_TO_ENTRY = {
 };
 const ACTION_KEYS_LIST = Object.keys(ACTION_KEY_TO_ENTRY);
 
+const EMPTY_CHAR = '‒'
+const FULL_CHAR = '#'
+
+
 /** Function used with enterprise calendar to convert from Meridian time to Military time */
 function standardizeToInternationalTime(receivedFormatTimeString) {
 
@@ -88,7 +92,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
 
     if ((hoursThreshold - hoursSum) < 0) {
         alert("[" + label + "]\n\n" + (isRealHoursReport ? "You've worked " : "You have ") +
-            convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours")
+            convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours !!!")
     } else if ((hoursThreshold - hoursSum) == 0) {
         alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + ((label.toLowerCase().includes("so far") && !label.toLowerCase().includes("week")) ? " so far" : "") + "!")
     } else {
@@ -106,10 +110,16 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
         let pomosLeft = roundedMinsDiff / 54   // 45 + 9 = 54
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
 
+        timeProgress = '|'+FULL_CHAR.repeat(hoursSum*4) + EMPTY_CHAR.repeat(hoursDiff*4)+'|'
+
         alert("[" + label + "]\n\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
-            (displayFinishingTime ?
+            (displayFinishingTime ?                
+                 "\n\n\nDay Progress:\n\n" + timeProgress + "\n" +
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
-                ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : ""))
+                ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : "")
+                // the following line is for char length comparison if needed
+            //    + '\n' + EMPTY_CHAR.repeat(18) +"\n"+ FULL_CHAR.repeat(18) + "\n\n"
+            )
 
     }
 }
