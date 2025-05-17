@@ -91,10 +91,10 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
 function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursReport, displayFinishingTime) {
 
     if ((hoursThreshold - hoursSum) < 0) {
-        alert(messagePrefix+"\n" + (isRealHoursReport ? "You've worked " : "You have ") +
+        alert(messagePrefix + "\n" + (isRealHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours !!!")
     } else if ((hoursThreshold - hoursSum) == 0) {
-        alert(messagePrefix+"\nYou're done for " + (messagePrefix.toLowerCase().includes("week") ? "the week" : "the day") + ((messagePrefix.toLowerCase().includes("so far") && !messagePrefix.toLowerCase().includes("week")) ? " so far" : "") + "!")
+        alert(messagePrefix + "\nYou're done for " + (messagePrefix.toLowerCase().includes("week") ? "the week" : "the day") + ((messagePrefix.toLowerCase().includes("so far") && !messagePrefix.toLowerCase().includes("week")) ? " so far" : "") + "!")
     } else {
         let hoursDiff = hoursThreshold - hoursSum
         let timeDiffString = convertDecimalHoursToTimeFormat(hoursDiff)
@@ -110,16 +110,17 @@ function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursRep
         let pomosLeft = roundedMinsDiff / 54   // 45 + 9 = 54
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
 
-        timeProgress = '|'+FULL_CHAR.repeat(hoursSum*4) + EMPTY_CHAR.repeat(hoursDiff*4)+'|'
+        timePercentage = Math.round((hoursSum / hoursThreshold) * 100) + "%"
+        timeProgress = '|' + FULL_CHAR.repeat(hoursSum * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|'
 
-        alert(messagePrefix+"\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
-            (displayFinishingTime ?                
-                 "\n\n\nDay Progress:\n\n" + timeProgress + "\n" +
+        alert(messagePrefix + "\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
+            "\n\n\nDay Progress: " + timePercentage + "\n\n" + timeProgress + "\n" +
+            (displayFinishingTime ?
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
                 ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : "")
-                // the following line is for char length comparison if needed
+            // the following line is for char length comparison if needed
             //    + '\n' + EMPTY_CHAR.repeat(18) +"\n"+ FULL_CHAR.repeat(18) + "\n\n"
-            )
+        )
 
     }
 }
