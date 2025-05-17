@@ -94,7 +94,7 @@ function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursRep
         alert(messagePrefix+"\n" + (isRealHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours !!!")
     } else if ((hoursThreshold - hoursSum) == 0) {
-        alert(messagePrefix+"\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + ((label.toLowerCase().includes("so far") && !label.toLowerCase().includes("week")) ? " so far" : "") + "!")
+        alert(messagePrefix+"\nYou're done for " + (messagePrefix.toLowerCase().includes("week") ? "the week" : "the day") + ((messagePrefix.toLowerCase().includes("so far") && !messagePrefix.toLowerCase().includes("week")) ? " so far" : "") + "!")
     } else {
         let hoursDiff = hoursThreshold - hoursSum
         let timeDiffString = convertDecimalHoursToTimeFormat(hoursDiff)

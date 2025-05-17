@@ -8,37 +8,22 @@
             "type": "chrome",
             "request": "attach",
             "name": "Attach to Chrome",
-            "preLaunchTask": "launch-chrome", // WARNING: make sure the tasks.json endsPattern regexp string really matches what your command execution is showing for the process to start efficiently
+            "preLaunchTask": "launch-chrome", 
             "port": 9222,
             "webRoot": "${workspaceFolder}/src",
             "internalConsoleOptions": "openOnSessionStart",
-            "url": "https://calendar.google.com/*" //<-- this url must ...
-            // ... match exactly the one in the address bar of the browser ...
-            // or have a '*' as suffix to match any url with that prefix ...
-            // AND ALSO CONFIGURE THE tasks.json TO LAUNCH THE BROWSER WITH THE WANTED URL !!!
-            //
-            // https://stackoverflow.com/questions/42025962/debug-chrome-extensions-with-visual-studio-code
-            // make sure you have deployed your extension in your chrome browser ... source deployed 
-            // ... and here in vscode must be the same for debug breakpoints to match and fall in 
-            // ... the right place
-            // 
-            // In sumary ... just open chrome with:
-            // google-chrome --remote-debugging-port=9222 https://calendar.google.com/
-            //
-            // Or you can launch a specific app configured like:
-            // google-chrome --remote-debugging-port=9222 "--profile-directory=Profile 1" --app-id=kjbdgfilnfhdoflbpgamdcdgpehopbep
-            // before debugging with this option
-            // 
-            // TO APPLY CHANGES ONLY CLOSE THE BROWSER AND LAUNCH IT AGAIN
+            "url": "https://calendar.google.com/*"
         },
-        // {
-        //     "type": "node",
-        //     "request": "launch",
-        //     "name": "Method Testing",
-        //     "program": "${fileBasename}",
-        //     "skipFiles": [
-        //         "<node_internals>/**"
-        //     ]
-        // }
+        {
+            "type": "msedge",
+            "request": "attach",
+            "name": "Attach to Edge in macOS",
+            "preLaunchTask": "launch-edge-mac", 
+            "port": 9222,
+            "webRoot": "${workspaceFolder}/src",
+            "internalConsoleOptions": "openOnSessionStart",
+            "url": "https://calendar.google.com/*"
+        },
+    
     ]
 }

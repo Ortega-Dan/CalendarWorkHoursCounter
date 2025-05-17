@@ -29,6 +29,36 @@
                     }
                 }
             }
-        }
+        },
+        
+        {
+            "label": "launch-edge-mac",
+            "type": "shell",
+            "command": "open -a 'Microsoft Edge' --args --remote-debugging-port=9222 https://calendar.google.com/",
+            "isBackground": true,
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated",
+                "clear": true
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": ""
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": ".*"
+                    },
+                    "endsPattern": {
+                        "regexp": ".*Created TensorFlow Lite.*"
+                    }
+                }
+            }
+        },
     ]
 }
