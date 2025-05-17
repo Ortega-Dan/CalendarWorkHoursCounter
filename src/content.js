@@ -88,13 +88,13 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
         ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
-function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, displayFinishingTime) {
+function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursReport, displayFinishingTime) {
 
     if ((hoursThreshold - hoursSum) < 0) {
-        alert("[" + label + "]\n\n" + (isRealHoursReport ? "You've worked " : "You have ") +
+        alert(messagePrefix+"\n" + (isRealHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours !!!")
     } else if ((hoursThreshold - hoursSum) == 0) {
-        alert("[" + label + "]\n\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + ((label.toLowerCase().includes("so far") && !label.toLowerCase().includes("week")) ? " so far" : "") + "!")
+        alert(messagePrefix+"\nYou're done for " + (label.toLowerCase().includes("week") ? "the week" : "the day") + ((label.toLowerCase().includes("so far") && !label.toLowerCase().includes("week")) ? " so far" : "") + "!")
     } else {
         let hoursDiff = hoursThreshold - hoursSum
         let timeDiffString = convertDecimalHoursToTimeFormat(hoursDiff)
@@ -112,7 +112,7 @@ function showHoursDiffTo(hoursSum, hoursThreshold, label, isRealHoursReport, dis
 
         timeProgress = '|'+FULL_CHAR.repeat(hoursSum*4) + EMPTY_CHAR.repeat(hoursDiff*4)+'|'
 
-        alert("[" + label + "]\n\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
+        alert(messagePrefix+"\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
             (displayFinishingTime ?                
                  "\n\n\nDay Progress:\n\n" + timeProgress + "\n" +
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
@@ -297,20 +297,19 @@ function hoursCountingFlow(event) {
         // }
 
         // Showing results
-        alert("[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
+        hoursWorkedMessage = "[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
             convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
-            " hours " + (isRealHoursReport ? "worked" : "recorded"))
+            " hours " + (isRealHoursReport ? "worked" : "recorded")
 
         if (requiredDayText == "Entire Week") {
             // show hours diff for week query
-            showHoursDiffTo(isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, requiredDayText + (isPartialWeekReport ? " So Far" : "")
-                , isRealHoursReport, isPartialWeekReport)
+            showHoursDiffTo(hoursWorkedMessage, isRealHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, isRealHoursReport, isPartialWeekReport)
         } else {
             // Show hours diff for single day query
             if (isRealHoursReport) {
-                showHoursDiffTo(passedHoursAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
+                showHoursDiffTo(hoursWorkedMessage, passedHoursAdder, DAILY_HOURS_MARGIN, isRealHoursReport, (isRealHoursReport && isCurrentDayReport))
             } else {
-                showHoursDiffTo(calendarTimeAdder, DAILY_HOURS_MARGIN, requiredDayText, isRealHoursReport, false)
+                showHoursDiffTo(hoursWorkedMessage, calendarTimeAdder, DAILY_HOURS_MARGIN, isRealHoursReport, false)
             }
         }
 
