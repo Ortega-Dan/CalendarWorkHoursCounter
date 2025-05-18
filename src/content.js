@@ -110,11 +110,11 @@ function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursRep
         let pomosLeft = roundedMinsDiff / 54   // 45 + 9 = 54
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
 
-        timePercentage = Math.round((hoursSum / hoursThreshold) * 100) + "%"
+        let timePercentageLeft = Math.abs((Math.round((hoursSum / hoursThreshold) * 100) - 100)) + "% left"
         timeProgress = '|' + FULL_CHAR.repeat(hoursSum * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|'
 
-        alert(messagePrefix + "\n" + timeDiffString + " hours missing  [" + (roundedPomosLeft) + " pomos]" +
-            "\n\n\nDay Progress: " + timePercentage + "\n\n" + timeProgress + "\n" +
+        alert(messagePrefix + "\n\n" + timeDiffString + " hrs left  [" + (roundedPomosLeft) + " pomos]" +
+            "\n\n\nDay Progress: " + timePercentageLeft + "\n\n" + timeProgress + "\n" +
             (displayFinishingTime ?
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
                 ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : "")
@@ -300,7 +300,7 @@ function hoursCountingFlow(event) {
         // Showing results
         hoursWorkedMessage = "[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
             convertDecimalHoursToTimeFormat(isRealHoursReport ? passedHoursAdder : calendarTimeAdder) +
-            " hours " + (isRealHoursReport ? "worked" : "recorded")
+            " hrs " + (isRealHoursReport ? "worked" : "recorded")
 
         if (requiredDayText == "Entire Week") {
             // show hours diff for week query
