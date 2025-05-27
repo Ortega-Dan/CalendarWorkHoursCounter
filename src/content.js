@@ -21,8 +21,8 @@ const CURRENT_TIME_INDICATOR_ELEMENT = "div.LvQ60d"
 // It is used to know we are looking at the present and determine if we want to calculate so-far reports.
 
 // Week and daily hours margins to compare against
-let DAILY_HOURS_MARGIN
-let WEEKLY_HOURS_BASE
+let DAILY_HOURS_TARGET
+let WEEKLY_HOURS_BASE_TARGET
 
 // keys for chrome storage
 const DAILY_HOURS_KEY = "dayHours"
@@ -88,15 +88,24 @@ function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
         ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
 }
 
-function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursReport, displayFinishingTime) {
+function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompletedHoursReport, isSpecificDayReport, is_WeekSoFar_Report, displayFinishingTime) {
 
-    if ((hoursThreshold - hoursSum) < 0) {
-        alert(messagePrefix + "\n" + (isRealHoursReport ? "You've worked " : "You have ") +
-            convertDecimalHoursToTimeFormat((hoursThreshold - hoursSum) * -1) + " extra hours !!!")
-    } else if ((hoursThreshold - hoursSum) == 0) {
-        alert(messagePrefix + "\nYou're done for " + (messagePrefix.toLowerCase().includes("week") ? "the week" : "the day") + ((messagePrefix.toLowerCase().includes("so far") && !messagePrefix.toLowerCase().includes("week")) ? " so far" : "") + " !!")
+    const hoursDiff = hoursTarget - hoursSum
+
+    if (hoursDiff < 0) {
+        // extra hours
+
+        alert(messagePrefix + "\n" + (isCompletedHoursReport ? "You've worked " : "You have ") +
+            convertDecimalHoursToTimeFormat(hoursDiff * -1) + " extra hours !!!")
+
+    } else if (hoursDiff == 0) {
+        // target-matching hours
+
+        alert(messagePrefix + "\nYou're done for " + (isSpecificDayReport ? "the day" : "the week") + (is_WeekSoFar_Report ? " so far" : "") + " !!")
+
     } else {
-        let hoursDiff = hoursThreshold - hoursSum
+        // pending hours
+
         let timeDiffString = convertDecimalHoursToTimeFormat(hoursDiff)
 
         let dateTime = new Date()
@@ -110,16 +119,19 @@ function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursRep
         let pomosLeft = roundedMinsDiff / 54   // 45 + 9 = 54
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
 
-        let timePercentageLeft = Math.abs((Math.round((hoursSum / hoursThreshold) * 100) - 100)) + "% left"
-        timeProgress = '|' + FULL_CHAR.repeat(hoursSum * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|'
+        const timePercentageLeftText = Math.abs((Math.round((hoursSum / hoursTarget) * 100) - 100)) + "% left";
+        const timeProgressBar = '|' + FULL_CHAR.repeat(hoursSum * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|';
 
-        alert(messagePrefix + "\n\n" + timeDiffString + " hrs left  [" + (roundedPomosLeft) + " pomos]" +
-            "\n\n\nDay Progress: " + timePercentageLeft + "\n\n" + timeProgress + "\n" +
+        const dayProgressPercentAndBar = "\n\n\nDay Progress: " + timePercentageLeftText + "\n\n" + timeProgressBar + "\n"
+        // the following line is for char length comparison if needed
+        //    + '\n' + EMPTY_CHAR.repeat(18) +"\n"+ FULL_CHAR.repeat(18) + "\n\n"
+
+        alert(messagePrefix +
+            "\n\n" + timeDiffString + " hrs left  [" + (roundedPomosLeft) + " pomos]" +
+            (isSpecificDayReport ? dayProgressPercentAndBar : "") +
             (displayFinishingTime ?
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
                 ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : "")
-            // the following line is for char length comparison if needed
-            //    + '\n' + EMPTY_CHAR.repeat(18) +"\n"+ FULL_CHAR.repeat(18) + "\n\n"
         )
 
     }
@@ -127,23 +139,23 @@ function showHoursDiffTo(messagePrefix, hoursSum, hoursThreshold, isRealHoursRep
 
 function hoursCountingFlow(event) {
 
-    DAILY_HOURS_MARGIN = null
-    WEEKLY_HOURS_BASE = null
+    DAILY_HOURS_TARGET = null
+    WEEKLY_HOURS_BASE_TARGET = null
 
     // Setting base hours for the day and week
     chrome.storage.sync.get([DAILY_HOURS_KEY, WEEKLY_HOURS_KEY], function (result) {
 
         // verifying base configuration
-        DAILY_HOURS_MARGIN = result[DAILY_HOURS_KEY]
-        WEEKLY_HOURS_BASE = result[WEEKLY_HOURS_KEY]
+        DAILY_HOURS_TARGET = result[DAILY_HOURS_KEY]
+        WEEKLY_HOURS_BASE_TARGET = result[WEEKLY_HOURS_KEY]
 
-        if (DAILY_HOURS_MARGIN == null || WEEKLY_HOURS_BASE == null) {
-            alert("Please set the daily and weekly hours in the extension popup.")
+        if (DAILY_HOURS_TARGET == null || WEEKLY_HOURS_BASE_TARGET == null) {
+            alert("Please set the daily and weekly hours goals in the extension popup.")
             return
         }
 
         // ---
-        let weeklyHoursMargin = WEEKLY_HOURS_BASE
+        let weekHoursTarget = WEEKLY_HOURS_BASE_TARGET
 
         // getting date of first day in view
         const firstDayInWeek = $(FIRST_DAY_NUMBER_ELEMENT).first().text().trim()
@@ -168,15 +180,16 @@ function hoursCountingFlow(event) {
 
 
         // Set the query for the current day
-        let isCurrentDayReport = false
+        let isCurrentDayQuery = false
         if (event.code === "KeyI") {
+            isCurrentDayQuery = true
 
             // Google Calendar format
             requiredDayText = "" + nowDateTime.getDate()
-            isCurrentDayReport = true
             // requiredDayText = months[nowDateTime.getMonth()] + " " + nowDateTime.getDate() +
             //     ", " + nowDateTime.getFullYear()
         }
+        const isCurrentDayReport = isCurrentDayQuery
 
         // Prompting for the query when user requested
         if (event.code === "KeyK") {
@@ -185,18 +198,18 @@ function hoursCountingFlow(event) {
                 "Or leave empty to check the entire week.").trim()
         }
 
-        const checkingSpecificDay = requiredDayText != null && requiredDayText != ""
+        const isSpecificDayReport = requiredDayText != null && requiredDayText != ""
 
         // Converting the query to lower case for later case insensitive matching
         requiredDayText = requiredDayText == null ? "" : requiredDayText.toLowerCase()
 
         // Logging the query (entered or inferred)
-        console.log("checkingSpecificDay: " + checkingSpecificDay)
-        console.log("Checking " + (checkingSpecificDay ? requiredDayText : "the week displayed") + ".")
+        console.log("isSpecificDayReport: " + isSpecificDayReport)
+        console.log("Checking " + (isSpecificDayReport ? requiredDayText : "the week displayed") + ".")
 
         // Initializing variable to add times
-        let calendarTimeAdder = 0
-        let passedHoursAdder = 0
+        let calendarHoursAdder = 0
+        let completedHoursAdder = 0
 
         let events = []
 
@@ -216,7 +229,7 @@ function hoursCountingFlow(event) {
             let textDay = getSingleDayStartingDayNumber(text)
 
             // ignoring "cal.ignore"s and external-calendars
-            if (isTrackableEvent(textDay, requiredDayText, text, checkingSpecificDay)) {
+            if (isTrackableEvent(textDay, requiredDayText, text, isSpecificDayReport)) {
 
                 console.log(++index + ") " + originalText)
 
@@ -264,34 +277,32 @@ function hoursCountingFlow(event) {
 
                 let hoursLength = getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime)
                 console.log("Hours: " + hoursLength)
-                calendarTimeAdder += hoursLength
+                calendarHoursAdder += hoursLength
 
                 // checking how many minutes or hours have actually passed
                 if (startDateTime < nowDateTime) {
                     if (endDateTime < nowDateTime) {
-                        passedHoursAdder += hoursLength
+                        completedHoursAdder += hoursLength
                     } else {
-                        passedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
+                        completedHoursAdder += getHoursDiffBetweenTwoDateObjs(startDateTime, nowDateTime)
                     }
                 }
 
             }
         })
 
-        console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarTimeAdder) + " hours.");
-
-        // default partial week report for current week view
-        const isCurrentWeekView = ($(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
-        let isPartialWeekReport = isCurrentWeekView
+        console.log("Total time: " + convertDecimalHoursToTimeFormat(calendarHoursAdder) + " hours.");
 
         // check if modifier keys are pressed
-        let isCompletedHoursReport = !event.shiftKey
+        const isCompletedHoursReport = !event.shiftKey
 
-        if (!checkingSpecificDay) {
-            requiredDayText = "Entire Week"
-            isPartialWeekReport = isCurrentWeekView && isCompletedHoursReport && !event.ctrlKey
-            if (isPartialWeekReport) {
-                weeklyHoursMargin = getWantedHoursSoFar(currentDayNumber)
+        // default partial week report for current week view        
+        let is_WeekSoFar_Report = false
+        if (!isSpecificDayReport) {
+            const isCurrentWeekView = ($(CURRENT_TIME_INDICATOR_ELEMENT).length > 0)
+            is_WeekSoFar_Report = isCurrentWeekView && isCompletedHoursReport && !event.ctrlKey
+            if (is_WeekSoFar_Report) {
+                weekHoursTarget = getTargetHoursForWeekSoFar(currentDayNumber)
             }
         }
 
@@ -302,29 +313,25 @@ function hoursCountingFlow(event) {
         // }
 
         // Showing results
-        hoursWorkedMessage = "[" + requiredDayText + (isPartialWeekReport && requiredDayText == "Entire Week" ? " So Far" : "") + "]\n\n" +
-            convertDecimalHoursToTimeFormat(isCompletedHoursReport ? passedHoursAdder : calendarTimeAdder) +
+        const hoursSumRecorded = isCompletedHoursReport ? completedHoursAdder : calendarHoursAdder
+
+        const labelText = (isSpecificDayReport ? requiredDayText : "Entire Week") + (is_WeekSoFar_Report ? " So Far" : "")
+        const hoursWorkedMessage = "[" + labelText + "]\n\n" + convertDecimalHoursToTimeFormat(hoursSumRecorded) +
             " hrs " + (isCompletedHoursReport ? "worked" : "recorded")
 
-        if (requiredDayText == "Entire Week") {
-            // show hours diff for week query
-            showHoursDiffTo(hoursWorkedMessage, isCompletedHoursReport ? passedHoursAdder : calendarTimeAdder, weeklyHoursMargin, isCompletedHoursReport, isPartialWeekReport)
-        } else {
-            // Show hours diff for single day query
-            if (isCompletedHoursReport) {
-                showHoursDiffTo(hoursWorkedMessage, passedHoursAdder, DAILY_HOURS_MARGIN, isCompletedHoursReport, (isCompletedHoursReport && isCurrentDayReport))
-            } else {
-                showHoursDiffTo(hoursWorkedMessage, calendarTimeAdder, DAILY_HOURS_MARGIN, isCompletedHoursReport, false)
-            }
-        }
+        // final display
+        const finalHoursTarget = isSpecificDayReport ? DAILY_HOURS_TARGET : weekHoursTarget
+        const displayFinishingTime = (isCurrentDayReport && isCompletedHoursReport) || is_WeekSoFar_Report
+
+        showHoursDiffToTarget(hoursWorkedMessage, hoursSumRecorded, finalHoursTarget, isCompletedHoursReport, isSpecificDayReport, is_WeekSoFar_Report, displayFinishingTime)
 
         console.log("Done ******\n\n\n")
 
     });
 }
 
-function getWantedHoursSoFar(currentDayNumber) {
-    return currentDayNumber > 4 ? WEEKLY_HOURS_BASE : DAILY_HOURS_MARGIN * currentDayNumber
+function getTargetHoursForWeekSoFar(currentDayNumber) {
+    return currentDayNumber > 4 ? WEEKLY_HOURS_BASE_TARGET : DAILY_HOURS_TARGET * currentDayNumber
 }
 
 function prefixInsertionFlow(event) {
@@ -354,9 +361,9 @@ function getSingleDayStartingDayNumber(text) {
     }
 }
 
-function isTrackableEvent(textDay, requiredDayText, text, checkingSpecificDay) {
+function isTrackableEvent(textDay, requiredDayText, text, isSpecificDayReport) {
     // ", calendar: " is the identifier for external calendar events
-    return (textDay != null && ((textDay == requiredDayText || !checkingSpecificDay) &&
+    return (textDay != null && ((textDay == requiredDayText || !isSpecificDayReport) &&
         !text.match(/\bcal.ignore\b/) && !text.match(/\bc.ig\b/) && !text.includes(", calendar: ") &&
         !text.includes(", declined, ") && !text.includes(", tentative, ")))
 }
