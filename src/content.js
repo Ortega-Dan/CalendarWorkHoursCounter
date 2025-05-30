@@ -95,13 +95,13 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
     if (hoursDiff < 0) {
         // extra hours
 
-        alert(messagePrefix + "\n" + (isCompletedHoursReport ? "You've worked " : "You have ") +
+        alert(messagePrefix + "\n\n" + (isCompletedHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat(hoursDiff * -1) + " extra hours !!!")
 
     } else if (hoursDiff == 0) {
         // target-matching hours
 
-        alert(messagePrefix + "\nYou're done for " + (isSpecificDayReport ? "the day" : "the week") + (is_WeekSoFar_Report ? " so far" : "") + " !!")
+        alert(messagePrefix + "\n\nYou're done for " + (isSpecificDayReport ? "the day" : "the week") + (is_WeekSoFar_Report ? " so far" : "") + " !!!")
 
     } else {
         // pending hours
@@ -314,13 +314,13 @@ function hoursCountingFlow(event) {
 
         // Showing results
         const hoursSumRecorded = isCompletedHoursReport ? completedHoursAdder : calendarHoursAdder
+        const finalHoursTarget = isSpecificDayReport ? DAILY_HOURS_TARGET : weekHoursTarget
 
         const labelText = (isSpecificDayReport ? requiredDayText : "Entire Week") + (is_WeekSoFar_Report ? " So Far" : "")
         const hoursWorkedMessage = "[" + labelText + "]\n\n" + convertDecimalHoursToTimeFormat(hoursSumRecorded) +
-            " hrs " + (isCompletedHoursReport ? "worked" : "recorded")
+            " hrs " + (isCompletedHoursReport ? "worked" : "recorded") + "   (of " +finalHoursTarget+" hrs target)";
 
         // final display
-        const finalHoursTarget = isSpecificDayReport ? DAILY_HOURS_TARGET : weekHoursTarget
         const displayFinishingTime = (isCurrentDayReport && isCompletedHoursReport) || is_WeekSoFar_Report
 
         showHoursDiffToTarget(hoursWorkedMessage, hoursSumRecorded, finalHoursTarget, isCompletedHoursReport, isSpecificDayReport, is_WeekSoFar_Report, displayFinishingTime)
