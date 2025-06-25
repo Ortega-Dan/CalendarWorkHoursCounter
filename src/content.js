@@ -116,7 +116,7 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
         let hours = dateTime.getHours()
 
         let roundedMinsDiff = Math.round(hoursDiff * 60)
-        let pomosLeft = roundedMinsDiff / 54   // 45 + 9 = 54
+        let pomosLeft = roundedMinsDiff / 60   // 50 + 10
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
 
         const timePercentageLeftText = Math.abs((Math.round((hoursSum / hoursTarget) * 100) - 100)) + "% left";
