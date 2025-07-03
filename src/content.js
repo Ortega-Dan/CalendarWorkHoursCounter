@@ -23,10 +23,12 @@ const CURRENT_TIME_INDICATOR_ELEMENT = "div.LvQ60d"
 // Week and daily hours margins to compare against
 let DAILY_HOURS_TARGET
 let WEEKLY_HOURS_BASE_TARGET
+let POMO_FOCUS_MINS_VALUE
 
 // keys for chrome storage
 const DAILY_HOURS_KEY = "dayHours"
 const WEEKLY_HOURS_KEY = "weekHours"
+const POMO_FOCUS_MINS_KEY = "pomoFocusMins"
 
 const ACTION_KEY_TO_ENTRY = {
     "KeyJ": "first",
@@ -116,7 +118,7 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
         let hours = dateTime.getHours()
 
         let roundedMinsDiff = Math.round(hoursDiff * 60)
-        let pomosLeft = roundedMinsDiff / 60   // 50 + 10
+        let pomosLeft = roundedMinsDiff / (POMO_FOCUS_MINS_VALUE + (POMO_FOCUS_MINS_VALUE * 0.2))
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
 
         const timePercentageLeftText = Math.abs((Math.round((hoursSum / hoursTarget) * 100) - 100)) + "% left";
@@ -143,11 +145,12 @@ function hoursCountingFlow(event) {
     WEEKLY_HOURS_BASE_TARGET = null
 
     // Setting base hours for the day and week
-    chrome.storage.sync.get([DAILY_HOURS_KEY, WEEKLY_HOURS_KEY], function (result) {
+    chrome.storage.sync.get([DAILY_HOURS_KEY, WEEKLY_HOURS_KEY, POMO_FOCUS_MINS_KEY], function (result) {
 
         // verifying base configuration
-        DAILY_HOURS_TARGET = result[DAILY_HOURS_KEY]
-        WEEKLY_HOURS_BASE_TARGET = result[WEEKLY_HOURS_KEY]
+        DAILY_HOURS_TARGET = Number(result[DAILY_HOURS_KEY])
+        WEEKLY_HOURS_BASE_TARGET = Number(result[WEEKLY_HOURS_KEY])
+        POMO_FOCUS_MINS_VALUE = Number(result[POMO_FOCUS_MINS_KEY])
 
         if (DAILY_HOURS_TARGET == null || WEEKLY_HOURS_BASE_TARGET == null) {
             alert("Please set the daily and weekly hours goals in the extension popup.")
@@ -318,7 +321,7 @@ function hoursCountingFlow(event) {
 
         const labelText = (isSpecificDayReport ? requiredDayText : "Entire Week") + (is_WeekSoFar_Report ? " So Far" : "")
         const hoursWorkedMessage = "[" + labelText + "]\n\n" + convertDecimalHoursToTimeFormat(hoursSumRecorded) +
-            " hrs " + (isCompletedHoursReport ? "worked" : "recorded") + "   (of " +finalHoursTarget+" hrs target)";
+            " hrs " + (isCompletedHoursReport ? "worked" : "recorded") + "   (of " + finalHoursTarget + " hrs target)";
 
         // final display
         const displayFinishingTime = (isCurrentDayReport && isCompletedHoursReport) || is_WeekSoFar_Report
