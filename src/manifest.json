@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Calendar Hours Counter",
   "description": "(For Google Calendar configured with English (US) language)",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "icons": {
     "16": "calendar16.png",
     "48": "calendar48.png",
