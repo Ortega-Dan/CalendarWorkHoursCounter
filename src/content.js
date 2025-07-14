@@ -85,6 +85,38 @@ function getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime) {
 }
 
 
+function getProgressBarString(hoursDiff, hoursTarget) {
+
+    if (hoursDiff >= hoursTarget) {
+        hoursDiff = hoursTarget;
+    }
+
+    let extraTimeString = '';
+    if (hoursDiff < 0) {
+        extraTimeString = '+' + (FULL_CHAR.repeat(Math.abs(hoursDiff) * 4));
+        hoursDiff = 0;
+    }
+
+    return '|' + FULL_CHAR.repeat((DAILY_HOURS_TARGET - hoursDiff) * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|' + extraTimeString;
+}
+
+
+function getTimePercentageLeftString(hoursDiff, hoursTarget) {
+
+    if (hoursDiff == 0) {
+        return "Complete!";
+    }
+
+    let suffix = 'left';
+
+    if (hoursDiff < 0) {
+        suffix = 'over !!!';
+    }
+
+    return Math.abs(Math.round((hoursDiff / hoursTarget) * 100)) + "% "+ suffix;
+}
+
+
 function convertDecimalHoursToTimeFormat(hoursInDecimalFormat) {
     return "" + parseInt(hoursInDecimalFormat) + ":" +
         ("" + parseInt((hoursInDecimalFormat - parseInt(hoursInDecimalFormat)) * 60)).padStart(2, "0")
@@ -94,16 +126,26 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
 
     const hoursDiff = hoursTarget - hoursSum
 
+    const timePercentageLeftText = getTimePercentageLeftString(hoursDiff, DAILY_HOURS_TARGET)
+    const timeProgressBar = getProgressBarString(hoursDiff, DAILY_HOURS_TARGET)
+    const dayProgressPercentAndBar = "\n\n\nDay Progress: " + timePercentageLeftText + "\n\n" + timeProgressBar + "\n"
+
     if (hoursDiff < 0) {
         // extra hours
 
         alert(messagePrefix + "\n\n" + (isCompletedHoursReport ? "You've worked " : "You have ") +
-            convertDecimalHoursToTimeFormat(hoursDiff * -1) + " extra hours !!!")
+            convertDecimalHoursToTimeFormat(hoursDiff * -1) + " extra hours !!!"
+            +
+            ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "")
+        )
 
     } else if (hoursDiff == 0) {
         // target-matching hours
 
-        alert(messagePrefix + "\n\nYou're done for " + (isSpecificDayReport ? "the day" : "the week") + (is_WeekSoFar_Report ? " so far" : "") + " !!!")
+        alert(messagePrefix + "\n\nYou're done for " + (isSpecificDayReport ? "the day" : "the week") + (is_WeekSoFar_Report ? " so far" : "") + " !!!"
+            +
+            ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "")
+        )
 
     } else {
         // pending hours
@@ -118,19 +160,15 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
         let hours = dateTime.getHours()
 
         let roundedMinsDiff = Math.round(hoursDiff * 60)
+
         let pomosLeft = roundedMinsDiff / (POMO_FOCUS_MINS_VALUE + (POMO_FOCUS_MINS_VALUE * 0.2))
         let roundedPomosLeft = Math.round(pomosLeft * 10) / 10
-
-        const timePercentageLeftText = Math.abs((Math.round((hoursSum / hoursTarget) * 100) - 100)) + "% left";
-        const timeProgressBar = '|' + FULL_CHAR.repeat(hoursSum * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|';
-
-        const dayProgressPercentAndBar = "\n\n\nDay Progress: " + timePercentageLeftText + "\n\n" + timeProgressBar + "\n"
         // the following line is for char length comparison if needed
         //    + '\n' + EMPTY_CHAR.repeat(18) +"\n"+ FULL_CHAR.repeat(18) + "\n\n"
 
         alert(messagePrefix +
             "\n\n" + timeDiffString + " hrs left  [" + (roundedPomosLeft) + " pomos]" +
-            (isSpecificDayReport ? dayProgressPercentAndBar : "") +
+            ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "") +
             (displayFinishingTime ?
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
                 ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : "")
@@ -184,7 +222,7 @@ function hoursCountingFlow(event) {
 
         // Set the query for the current day
         let isCurrentDayQuery = false
-        if (event.code === "KeyI") {
+        if (event.code === "KeyO") {
             isCurrentDayQuery = true
 
             // Google Calendar format
@@ -195,10 +233,15 @@ function hoursCountingFlow(event) {
         const isCurrentDayReport = isCurrentDayQuery
 
         // Prompting for the query when user requested
-        if (event.code === "KeyK") {
+        if (event.code === "KeyI") {
             // Enterprise query should be Day and Month, whereas Google Calendar should be Month and Day
             requiredDayText = prompt("What Day Number do you want to check ?\n[From the week on screen]\n\n" +
                 "Or leave empty to check the entire week.").trim()
+        }
+
+        if (event.code === "KeyK") {
+            // This is equivalent to requiring the Week So Far report
+            requiredDayText = ""
         }
 
         const isSpecificDayReport = requiredDayText != null && requiredDayText != ""
@@ -377,7 +420,7 @@ $("html").keydown(function (event) {
 
     // Running functionality with Ctrl + i or Ctrl + k (case insensitive)
     if (event.altKey === true &&
-        (event.code === "KeyI" || event.code === "KeyK")) {
+        (event.code === "KeyI" || event.code === "KeyK" || event.code === "KeyO")) {
         hoursCountingFlow(event)
     } else {
         prefixInsertionFlow(event)
