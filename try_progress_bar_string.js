@@ -5,19 +5,21 @@ const EMPTY_CHAR = '‒';
 const FULL_CHAR = '#';
 const DAILY_HOURS_TARGET = 8.5;
 
-function getProgressBarString(hoursDiff, hoursTarget) {
+function getProgressBarString(hoursDiffToTarget, hoursTarget) {
 
-    if (hoursDiff >= hoursTarget) {
-        hoursDiff = hoursTarget;
+    let missingTimeString = '';
+    if (hoursDiffToTarget > hoursTarget) {
+        missingTimeString = EMPTY_CHAR.repeat((hoursDiffToTarget - hoursTarget) * 4);
+        hoursDiffToTarget = hoursTarget;
     }
 
     let extraTimeString = '';
-    if (hoursDiff < 0) {
-        extraTimeString = '+' + (FULL_CHAR.repeat(Math.abs(hoursDiff) * 4));
-        hoursDiff = 0;
+    if (hoursDiffToTarget < 0) {
+        extraTimeString = '+' + (FULL_CHAR.repeat(Math.abs(hoursDiffToTarget) * 4));
+        hoursDiffToTarget = 0;
     }
 
-    return '|' + FULL_CHAR.repeat((DAILY_HOURS_TARGET - hoursDiff) * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|' + extraTimeString;
+    return missingTimeString + '|' + FULL_CHAR.repeat((DAILY_HOURS_TARGET - hoursDiffToTarget) * 4) + EMPTY_CHAR.repeat(hoursDiffToTarget * 4) + '|' + extraTimeString;
 }
 
 // SOME TESTS ---------------

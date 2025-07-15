@@ -85,35 +85,37 @@ function getHoursDiffBetweenTwoDateObjs(startDateTime, endDateTime) {
 }
 
 
-function getProgressBarString(hoursDiff, hoursTarget) {
+function getProgressBarString(hoursDiffToTarget, hoursTarget) {
 
-    if (hoursDiff >= hoursTarget) {
-        hoursDiff = hoursTarget;
+    let missingTimeString = '';
+    if (hoursDiffToTarget > hoursTarget) {
+        missingTimeString = EMPTY_CHAR.repeat((hoursDiffToTarget - hoursTarget) * 4);
+        hoursDiffToTarget = hoursTarget;
     }
 
     let extraTimeString = '';
-    if (hoursDiff < 0) {
-        extraTimeString = '+' + (FULL_CHAR.repeat(Math.abs(hoursDiff) * 4));
-        hoursDiff = 0;
+    if (hoursDiffToTarget < 0) {
+        extraTimeString = '+' + (FULL_CHAR.repeat(Math.abs(hoursDiffToTarget) * 4));
+        hoursDiffToTarget = 0;
     }
 
-    return '|' + FULL_CHAR.repeat((DAILY_HOURS_TARGET - hoursDiff) * 4) + EMPTY_CHAR.repeat(hoursDiff * 4) + '|' + extraTimeString;
+    return missingTimeString + '|' + FULL_CHAR.repeat((DAILY_HOURS_TARGET - hoursDiffToTarget) * 4) + EMPTY_CHAR.repeat(hoursDiffToTarget * 4) + '|' + extraTimeString;
 }
 
 
-function getTimePercentageLeftString(hoursDiff, hoursTarget) {
+function getTimePercentageLeftString(hoursDiffToTarget, hoursTarget) {
 
-    if (hoursDiff == 0) {
+    if (hoursDiffToTarget == 0) {
         return "Complete!";
     }
 
     let suffix = 'left';
 
-    if (hoursDiff < 0) {
+    if (hoursDiffToTarget < 0) {
         suffix = 'over !!!';
     }
 
-    return Math.abs(Math.round((hoursDiff / hoursTarget) * 100)) + "% "+ suffix;
+    return Math.abs(Math.round((hoursDiffToTarget / hoursTarget) * 100)) + "% " + suffix;
 }
 
 
@@ -129,22 +131,21 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
     const timePercentageLeftText = getTimePercentageLeftString(hoursDiff, DAILY_HOURS_TARGET)
     const timeProgressBar = getProgressBarString(hoursDiff, DAILY_HOURS_TARGET)
     const dayProgressPercentAndBar = "\n\n\nDay Progress: " + timePercentageLeftText + "\n\n" + timeProgressBar + "\n"
+    const dayProgressInfo = ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "")
 
     if (hoursDiff < 0) {
         // extra hours
 
         alert(messagePrefix + "\n\n" + (isCompletedHoursReport ? "You've worked " : "You have ") +
             convertDecimalHoursToTimeFormat(hoursDiff * -1) + " extra hours !!!"
-            +
-            ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "")
+            + dayProgressInfo
         )
 
     } else if (hoursDiff == 0) {
         // target-matching hours
 
         alert(messagePrefix + "\n\nYou're done for " + (isSpecificDayReport ? "the day" : "the week") + (is_WeekSoFar_Report ? " so far" : "") + " !!!"
-            +
-            ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "")
+            + dayProgressInfo
         )
 
     } else {
@@ -168,7 +169,7 @@ function showHoursDiffToTarget(messagePrefix, hoursSum, hoursTarget, isCompleted
 
         alert(messagePrefix +
             "\n\n" + timeDiffString + " hrs left  [" + (roundedPomosLeft) + " pomos]" +
-            ((isSpecificDayReport || is_WeekSoFar_Report) ? dayProgressPercentAndBar : "") +
+            dayProgressInfo +
             (displayFinishingTime ?
                 "\n\n· Finishing by " + (hours == 12 ? hours : hours % 12) + ":" +
                 ("" + dateTime.getMinutes()).padStart(2, "0") + (hours / 12 < 1.0 ? " am" : " pm") + " ·" : "")
@@ -190,8 +191,8 @@ function hoursCountingFlow(event) {
         WEEKLY_HOURS_BASE_TARGET = Number(result[WEEKLY_HOURS_KEY])
         POMO_FOCUS_MINS_VALUE = Number(result[POMO_FOCUS_MINS_KEY])
 
-        if (DAILY_HOURS_TARGET == null || WEEKLY_HOURS_BASE_TARGET == null) {
-            alert("Please set the daily and weekly hours goals in the extension popup.")
+        if (DAILY_HOURS_TARGET == null || WEEKLY_HOURS_BASE_TARGET == null || POMO_FOCUS_MINS_VALUE == null || DAILY_HOURS_TARGET <= 0 || WEEKLY_HOURS_BASE_TARGET <= 0 || POMO_FOCUS_MINS_VALUE <= 0) {
+            alert("Please set the target values to positive numbers in the extension popup.")
             return
         }
 

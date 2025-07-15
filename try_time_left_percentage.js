@@ -3,19 +3,19 @@
 const DAILY_HOURS_TARGET = 8.5;
 
 
-function getTimePercentageLeftString(hoursDiff, hoursTarget) {
+function getTimePercentageLeftString(hoursDiffToTarget, hoursTarget) {
 
-    if (hoursDiff == 0) {
+    if (hoursDiffToTarget == 0) {
         return "Complete!";
     }
 
     let suffix = 'left';
 
-    if (hoursDiff < 0) {
+    if (hoursDiffToTarget < 0) {
         suffix = 'over !!!';
     }
 
-    return Math.abs(Math.round((hoursDiff / hoursTarget) * 100)) + "% " + suffix;
+    return Math.abs(Math.round((hoursDiffToTarget / hoursTarget) * 100)) + "% " + suffix;
 }
 
 
